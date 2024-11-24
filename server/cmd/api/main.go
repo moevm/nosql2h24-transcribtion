@@ -3,10 +3,9 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/chi/v5/middleware"
 	"github.com/moevm/nosql2h24-transcribtion/config"
 	"github.com/moevm/nosql2h24-transcribtion/db"
+	"github.com/moevm/nosql2h24-transcribtion/routes"
 	"log"
 	"net/http"
 	"time"
@@ -20,8 +19,12 @@ func main() {
 
 	client := db.InitConnection(&cfg)
 
-	r := chi.NewRouter()
-	r.Use(middleware.Logger)
+	if cfg.SeedDatabase {
+		db.SeedData(cfg, client)
+		log.Println("Seed data successfully")
+	}
+
+	r := routes.NewRouter()
 
 	r.Get("/healthcheck", func(w http.ResponseWriter, r *http.Request) {
 		ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)

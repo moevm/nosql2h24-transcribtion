@@ -6,7 +6,4 @@ build:
 start:
 	./main
 
-seed:
-	go run ./cmd/ape/seed.go
-
 restart: build start

@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/moevm/nosql2h24-transcribtion/config"
 	"github.com/moevm/nosql2h24-transcribtion/models"
+	"go.mongodb.org/mongo-driver/mongo"
 	"io"
 	"log"
 	"os"
@@ -30,13 +31,8 @@ func loadDataFromFile(filePath string, result interface{}) error {
 	return nil
 }
 
-func SeedData() {
-	cfg, err := config.LoadConfig()
-	if err != nil {
-		log.Fatal("Could not load environment variables", err)
-	}
+func SeedData(cfg config.Config, client *mongo.Client) {
 
-	client := InitConnection(&cfg)
 	ctx := context.Background()
 
 	var users []models.User
@@ -59,8 +55,7 @@ func SeedData() {
 	jobsCollection := client.Database(cfg.DBName).Collection("jobs")
 	serversCollection := client.Database(cfg.DBName).Collection("servers")
 
-	// Delete all existing documents before seeding new data
-	_, err = usersCollection.DeleteMany(ctx, map[string]interface{}{})
+	_, err := usersCollection.DeleteMany(ctx, map[string]interface{}{})
 	if err != nil {
 		log.Fatal("Error deleting users data: ", err)
 	}
