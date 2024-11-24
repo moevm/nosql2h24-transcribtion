@@ -1,0 +1,41 @@
+[
+  {
+    "_id": { "$oid": "650e822f5f1e4e0001a0be01" },
+    "hostname": "server_1",
+    "address": "192.168.1.1",
+    "description": "Main processing server for job tasks.",
+    "status": "active",
+    "created_at": { "$date": "2023-10-10T08:00:00Z" },
+    "updated_at": { "$date": "2023-10-10T08:00:00Z" },
+    "current_tasks": [
+      { "$oid": "650e7c3f5f1e4e0001a0bdf3" }
+    ],
+    "completed_tasks": [
+      { "$oid": "650e7c3f5f1e4e0001a0bdf7" }
+    ]
+  },
+  {
+    "_id": { "$oid": "650e832f5f1e4e0001a0be02" },
+    "hostname": "server_2",
+    "address": "192.168.1.2",
+    "description": "Backup server for task processing.",
+    "status": "inactive",
+    "created_at": { "$date": "2023-11-05T14:30:00Z" },
+    "updated_at": { "$date": "2023-11-05T14:30:00Z" },
+    "current_tasks": [],
+    "completed_tasks": []
+  },
+  {
+    "_id": { "$oid": "650e842f5f1e4e0001a0be03" },
+    "hostname": "server_3",
+    "address": "192.168.1.3",
+    "description": "Test server for job simulation.",
+    "status": "active",
+    "created_at": { "$date": "2023-11-20T09:00:00Z" },
+    "updated_at": { "$date": "2023-11-20T09:00:00Z" },
+    "current_tasks": [
+      { "$oid": "650e7c3f5f1e4e0001a0bdf4" }
+    ],
+    "completed_tasks": []
+  }
+]

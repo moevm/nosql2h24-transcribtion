@@ -1,0 +1,44 @@
+[
+  {
+    "_id": { "$oid": "650e7c3f5f1e4e0001a0bdf3" },
+    "user_id": { "$oid": "650e802f5f1e4e0001a0be00" },
+    "title": "Transcription Task 1",
+    "status": "in_progress",
+    "source_language": "English",
+    "file_format": "mp3",
+    "description": "Transcription of audio file.",
+    "input_file": "audio1.mp3",
+    "output_file": "transcription1.txt",
+    "created_at": { "$date": "2023-10-15T09:00:00Z" },
+    "updated_at": { "$date": "2023-10-15T09:00:00Z" },
+    "host_id": { "$oid": "650e822f5f1e4e0001a0be01" }
+  },
+  {
+    "_id": { "$oid": "650e7c3f5f1e4e0001a0bdf4" },
+    "user_id": { "$oid": "650e802f5f1e4e0001a0be01" },
+    "title": "Translation Task 1",
+    "status": "completed",
+    "source_language": "Spanish",
+    "file_format": "pdf",
+    "description": "Translate document to English.",
+    "input_file": "document1.pdf",
+    "output_file": "translated1.pdf",
+    "created_at": { "$date": "2023-11-12T11:30:00Z" },
+    "updated_at": { "$date": "2023-11-12T11:30:00Z" },
+    "host_id": { "$oid": "650e832f5f1e4e0001a0be02" }
+  },
+  {
+    "_id": { "$oid": "650e7c3f5f1e4e0001a0bdf5" },
+    "user_id": { "$oid": "650e802f5f1e4e0001a0be02" },
+    "title": "Data Processing Task 1",
+    "status": "pending",
+    "source_language": "French",
+    "file_format": "csv",
+    "description": "Data cleaning and processing task.",
+    "input_file": "data1.csv",
+    "output_file": "processed1.csv",
+    "created_at": { "$date": "2023-11-18T15:00:00Z" },
+    "updated_at": { "$date": "2023-11-18T15:00:00Z" },
+    "host_id": { "$oid": "650e842f5f1e4e0001a0be03" }
+  }
+]

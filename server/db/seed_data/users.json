@@ -1,0 +1,110 @@
+[
+  {
+    "_id": { "$oid": "650e812f5f1e4e0001a0be00" },
+    "username": "admin_master",
+    "email": "admin.master@example.com",
+    "password_hash": "hashed_password_admin",
+    "permissions": "admin",
+    "created_at": { "$date": "2023-08-01T10:00:00Z" },
+    "updated_at": { "$date": "2023-08-01T10:00:00Z" },
+    "last_login_at": { "$date": "2023-11-23T16:00:00Z" },
+    "payments": [],
+    "jobs": []
+  },
+  {
+    "_id": { "$oid": "650e7c2f5f1e4e0001a0bdf1" },
+    "username": "john_doe",
+    "email": "john.doe@example.com",
+    "password_hash": "hashed_password_123",
+    "permissions": "user",
+    "created_at": { "$date": "2023-11-01T12:00:00Z" },
+    "updated_at": { "$date": "2023-11-01T12:00:00Z" },
+    "last_login_at": { "$date": "2023-11-20T09:00:00Z" },
+    "payments": [
+      {
+        "_id": { "$oid": "650e7c3e5f1e4e0001a0bdf2" },
+        "price": "100.00",
+        "payment_method": "credit_card",
+        "payment_status": "completed",
+        "created_at": { "$date": "2023-11-10T10:00:00Z" },
+        "updated_at": { "$date": "2023-11-10T10:30:00Z" }
+      }
+    ],
+    "jobs": [ { "$oid": "650e7c3f5f1e4e0001a0bdf3" } ]
+  },
+  {
+    "_id": { "$oid": "650e7d2f5f1e4e0001a0bdf5" },
+    "username": "jane_smith",
+    "email": "jane.smith@example.com",
+    "password_hash": "hashed_password_456",
+    "permissions": "admin",
+    "created_at": { "$date": "2023-10-15T09:00:00Z" },
+    "updated_at": { "$date": "2023-10-15T09:00:00Z" },
+    "last_login_at": { "$date": "2023-11-20T11:30:00Z" },
+    "payments": [
+      {
+        "_id": { "$oid": "650e7d3e5f1e4e0001a0bdf6" },
+        "price": "250.00",
+        "payment_method": "paypal",
+        "payment_status": "pending",
+        "created_at": { "$date": "2023-11-19T08:00:00Z" },
+        "updated_at": { "$date": "2023-11-19T09:00:00Z" }
+      }
+    ],
+    "jobs": [ { "$oid": "650e7d4f5f1e4e0001a0bdf7" } ]
+  },
+  {
+    "_id": { "$oid": "650e7e2f5f1e4e0001a0bdf8" },
+    "username": "alice_wonder",
+    "email": "alice.wonder@example.com",
+    "password_hash": "hashed_password_789",
+    "permissions": "user",
+    "created_at": { "$date": "2023-11-05T14:00:00Z" },
+    "updated_at": { "$date": "2023-11-05T14:00:00Z" },
+    "last_login_at": { "$date": "2023-11-21T10:00:00Z" },
+    "payments": [
+      {
+        "_id": { "$oid": "650e7e3e5f1e4e0001a0bdf9" },
+        "price": "50.00",
+        "payment_method": "bank_transfer",
+        "payment_status": "completed",
+        "created_at": { "$date": "2023-11-15T10:30:00Z" },
+        "updated_at": { "$date": "2023-11-15T11:00:00Z" }
+      }
+    ],
+    "jobs": [ { "$oid": "650e7e4f5f1e4e0001a0bdfa" } ]
+  },
+  {
+    "_id": { "$oid": "650e7f2f5f1e4e0001a0bdfb" },
+    "username": "bob_builder",
+    "email": "bob.builder@example.com",
+    "password_hash": "hashed_password_987",
+    "permissions": "user",
+    "created_at": { "$date": "2023-09-20T08:00:00Z" },
+    "updated_at": { "$date": "2023-09-20T08:00:00Z" },
+    "last_login_at": { "$date": "2023-11-18T07:00:00Z" },
+    "payments": [],
+    "jobs": [ { "$oid": "650e7f4f5f1e4e0001a0bdfc" } ]
+  },
+  {
+    "_id": { "$oid": "650e802f5f1e4e0001a0bdfd" },
+    "username": "charlie_chaplin",
+    "email": "charlie.chaplin@example.com",
+    "password_hash": "hashed_password_654",
+    "permissions": "moderator",
+    "created_at": { "$date": "2023-10-01T15:00:00Z" },
+    "updated_at": { "$date": "2023-10-01T15:00:00Z" },
+    "last_login_at": { "$date": "2023-11-22T18:00:00Z" },
+    "payments": [
+      {
+        "_id": { "$oid": "650e803e5f1e4e0001a0bdfe" },
+        "price": "120.00",
+        "payment_method": "credit_card",
+        "payment_status": "completed",
+        "created_at": { "$date": "2023-10-15T12:00:00Z" },
+        "updated_at": { "$date": "2023-10-15T12:30:00Z" }
+      }
+    ],
+    "jobs": [ { "$oid": "650e804f5f1e4e0001a0bdff" } ]
+  }
+]
