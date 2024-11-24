@@ -7,8 +7,9 @@ import (
 )
 
 type Config struct {
-	DBUri string `mapstructure:"MONGODB_LOCAL_URI"`
-	Port  string `mapstructure:"PORT"`
+	DBUri  string `mapstructure:"MONGODB_LOCAL_URI"`
+	Port   string `mapstructure:"PORT"`
+	DBName string `mapstructure:"MONGODB_LOCAL_NAME"`
 }
 
 func LoadConfig() (Config, error) {
@@ -16,5 +17,10 @@ func LoadConfig() (Config, error) {
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
-	return Config{DBUri: os.Getenv("MONGODB_URI"), Port: os.Getenv("PORT")}, nil
+	return Config{
+			DBUri:  os.Getenv("MONGODB_URI"),
+			Port:   os.Getenv("PORT"),
+			DBName: os.Getenv("MONGODB_NAME"),
+		},
+		nil
 }
