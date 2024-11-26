@@ -12,13 +12,17 @@ import (
 
 const ConnectionTimeout = 10 * time.Second
 
-func InitConnection(cfg *config.Config) *mongo.Client {
+var client *mongo.Client
+var cfg *config.Config
+
+func InitConnection(config *config.Config) *mongo.Client {
 
 	ctx, cancel := context.WithTimeout(context.Background(), ConnectionTimeout)
 	defer cancel()
-
+	cfg = config
 	mongoconn := options.Client().ApplyURI(cfg.DBUri)
-	client, err := mongo.Connect(ctx, mongoconn)
+	var err error
+	client, err = mongo.Connect(ctx, mongoconn)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -33,4 +37,8 @@ func InitConnection(cfg *config.Config) *mongo.Client {
 	fmt.Println("Connected to MongoDB!")
 
 	return client
+}
+
+func GetCollection(collectionName string) *mongo.Collection {
+	return client.Database(cfg.DBName).Collection(collectionName)
 }

@@ -6,16 +6,16 @@ import (
 )
 
 type User struct {
-	ID           primitive.ObjectID   `bson:"_id,omitempty"`
-	Username     string               `bson:"username"`
-	Email        string               `bson:"email"`
-	PasswordHash string               `bson:"password_hash"`
-	Permissions  string               `bson:"permissions"`
-	CreatedAt    time.Time            `bson:"created_at"`
-	UpdatedAt    time.Time            `bson:"updated_at"`
-	LastLoginAt  time.Time            `bson:"last_login_at"`
-	Payments     []Payment            `bson:"payments"`
-	Jobs         []primitive.ObjectID `bson:"jobs"`
+	ID           primitive.ObjectID   `bson:"_id,omitempty" json:"id,omitempty"`
+	Username     string               `bson:"username" json:"username"`
+	Email        string               `bson:"email" json:"email"`
+	PasswordHash string               `bson:"password_hash" json:"password_hash"`
+	Permissions  string               `bson:"permissions" json:"permissions"`
+	CreatedAt    time.Time            `bson:"created_at" json:"created_at"`
+	UpdatedAt    time.Time            `bson:"updated_at" json:"updated_at"`
+	LastLoginAt  time.Time            `bson:"last_login_at" json:"last_login_at"`
+	Payments     []Payment            `bson:"payments" json:"payments"`
+	Jobs         []primitive.ObjectID `bson:"jobs" json:"jobs"`
 }
 
 type Payment struct {

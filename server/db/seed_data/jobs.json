@@ -9,8 +9,8 @@
     "description": "Transcription of audio file.",
     "input_file": "audio1.mp3",
     "output_file": "transcription1.txt",
-    "created_at": { "$date": "2023-10-15T09:00:00Z" },
-    "updated_at": { "$date": "2023-10-15T09:00:00Z" },
+    "created_at": "2023-10-15T09:00:00Z",
+    "updated_at": "2023-10-15T09:00:00Z",
     "host_id": { "$oid": "650e822f5f1e4e0001a0be01" }
   },
   {
@@ -23,8 +23,8 @@
     "description": "Translate document to English.",
     "input_file": "document1.pdf",
     "output_file": "translated1.pdf",
-    "created_at": { "$date": "2023-11-12T11:30:00Z" },
-    "updated_at": { "$date": "2023-11-12T11:30:00Z" },
+    "created_at": "2023-11-12T11:30:00Z",
+    "updated_at": "2023-11-12T11:30:00Z",
     "host_id": { "$oid": "650e832f5f1e4e0001a0be02" }
   },
   {
@@ -37,8 +37,8 @@
     "description": "Data cleaning and processing task.",
     "input_file": "data1.csv",
     "output_file": "processed1.csv",
-    "created_at": { "$date": "2023-11-18T15:00:00Z" },
-    "updated_at": { "$date": "2023-11-18T15:00:00Z" },
+    "created_at": "2023-11-18T15:00:00Z",
+    "updated_at": "2023-11-18T15:00:00Z",
     "host_id": { "$oid": "650e842f5f1e4e0001a0be03" }
   }
 ]
