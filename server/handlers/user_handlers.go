@@ -325,3 +325,131 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(newUser)
 }
+
+func DeleteUser(w http.ResponseWriter, r *http.Request) {
+	userID := chi.URLParam(r, "id")
+	id, err := primitive.ObjectIDFromHex(userID)
+	if err != nil {
+		http.Error(w, "Invalid user ID", http.StatusBadRequest)
+		return
+	}
+
+	usersCollection := db.GetCollection("users")
+	_, err = usersCollection.DeleteOne(context.Background(), bson.M{"_id": id})
+	if err != nil {
+		http.Error(w, "Error deleting user", http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusNoContent)
+}
+
+func GetUserJobs(w http.ResponseWriter, r *http.Request) {
+	userID := chi.URLParam(r, "id")
+	id, err := primitive.ObjectIDFromHex(userID)
+	if err != nil {
+		http.Error(w, "Invalid user ID", http.StatusBadRequest)
+		return
+	}
+
+	usersCollection := db.GetCollection("users")
+	var user models.User
+	err = usersCollection.FindOne(context.Background(), bson.M{"_id": id}).Decode(&user)
+	if err != nil {
+		http.Error(w, "User not found", http.StatusNotFound)
+		return
+	}
+
+	jobsCollection := db.GetCollection("jobs")
+	var jobs []models.Job
+	cursor, err := jobsCollection.Find(context.Background(), bson.M{"_id": bson.M{"$in": user.Jobs}})
+	if err != nil {
+		http.Error(w, "Error fetching jobs", http.StatusInternalServerError)
+		return
+	}
+	defer cursor.Close(context.Background())
+	if err = cursor.All(context.Background(), &jobs); err != nil {
+		http.Error(w, "Error parsing jobs", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(jobs)
+}
+
+func AddUserJob(w http.ResponseWriter, r *http.Request) {
+	userID := chi.URLParam(r, "id")
+	id, err := primitive.ObjectIDFromHex(userID)
+	if err != nil {
+		http.Error(w, "Invalid user ID", http.StatusBadRequest)
+		return
+	}
+
+	var job models.Job
+	if err := json.NewDecoder(r.Body).Decode(&job); err != nil {
+		http.Error(w, "Invalid input", http.StatusBadRequest)
+		return
+	}
+
+	job.ID = primitive.NewObjectID()
+	job.UserID = id
+	job.CreatedAt = time.Now()
+	job.UpdatedAt = job.CreatedAt
+
+	jobsCollection := db.GetCollection("jobs")
+	_, err = jobsCollection.InsertOne(context.Background(), job)
+	if err != nil {
+		http.Error(w, "Error saving job", http.StatusInternalServerError)
+		return
+	}
+
+	usersCollection := db.GetCollection("users")
+	_, err = usersCollection.UpdateOne(context.Background(),
+		bson.M{"_id": id},
+		bson.M{"$push": bson.M{"jobs": job.ID}},
+	)
+	if err != nil {
+		http.Error(w, "Error updating user jobs", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(job)
+}
+
+func DeleteUserJob(w http.ResponseWriter, r *http.Request) {
+	userID := chi.URLParam(r, "id")
+	jobID := chi.URLParam(r, "jobId")
+
+	userObjectID, err := primitive.ObjectIDFromHex(userID)
+	if err != nil {
+		http.Error(w, "Invalid user ID", http.StatusBadRequest)
+		return
+	}
+
+	jobObjectID, err := primitive.ObjectIDFromHex(jobID)
+	if err != nil {
+		http.Error(w, "Invalid job ID", http.StatusBadRequest)
+		return
+	}
+
+	jobsCollection := db.GetCollection("jobs")
+	_, err = jobsCollection.DeleteOne(context.Background(), bson.M{"_id": jobObjectID})
+	if err != nil {
+		http.Error(w, "Error deleting job", http.StatusInternalServerError)
+		return
+	}
+
+	usersCollection := db.GetCollection("users")
+	_, err = usersCollection.UpdateOne(context.Background(),
+		bson.M{"_id": userObjectID},
+		bson.M{"$pull": bson.M{"jobs": jobObjectID}},
+	)
+	if err != nil {
+		http.Error(w, "Error updating user jobs", http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusNoContent)
+}

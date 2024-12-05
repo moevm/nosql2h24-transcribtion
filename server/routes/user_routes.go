@@ -11,6 +11,11 @@ func UserRoutes(r chi.Router) {
 
 	r.Post("/users", handlers.CreateUser)
 	r.Put("/users/{id}", handlers.UpdateUser)
-
 	r.Patch("/users/{id}", handlers.PatchUser)
+
+	r.Delete("/users/{id}", handlers.DeleteUser)
+
+	r.Get("/users/{id}/jobs", handlers.GetUserJobs)
+	r.Post("/users/{id}/jobs", handlers.AddUserJob)
+	r.Delete("/users/{id}/jobs/{jobId}", handlers.DeleteUserJob)
 }
