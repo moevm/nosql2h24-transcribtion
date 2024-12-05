@@ -20,6 +20,7 @@ func NewRouter() chi.Router {
 	r.Use(middleware.Logger)
 
 	UserRoutes(r)
+	ServerRoutes(r)
 
 	return r
 }
