@@ -45,16 +45,16 @@ type Job struct {
 }
 
 type Server struct {
-	ID             primitive.ObjectID   `bson:"_id,omitempty" json:"id,omitempty"`
-	Hostname       string               `bson:"hostname" json:"hostname"`
-	Address        string               `bson:"address" json:"address"`
-	Description    string               `bson:"description" json:"description"`
-	Status         string               `bson:"status" json:"status"`
-	CreatedAt      time.Time            `bson:"created_at" json:"created_at"`
-	UpdatedAt      time.Time            `bson:"updated_at" json:"updated_at"`
-	CurrentTasks   []primitive.ObjectID `bson:"current_tasks" json:"current_tasks"`
-	CompletedTasks []primitive.ObjectID `bson:"completed_tasks" json:"completed_tasks"`
-	CPUInfo        string               `bson:"cpu_info" json:"cpu_info"`
-	GPUInfo        string               `bson:"gpu_info" json:"gpu_info"`
-	RAMSizeGB      int32                `bson:"ram_size_gb" json:"ram_size_gb"`
+	ID            primitive.ObjectID   `bson:"_id,omitempty" json:"id,omitempty"`
+	Hostname      string               `bson:"hostname" json:"hostname"`
+	Address       string               `bson:"address" json:"address"`
+	Description   string               `bson:"description" json:"description"`
+	Status        string               `bson:"status" json:"status"`
+	CreatedAt     time.Time            `bson:"created_at" json:"created_at"`
+	UpdatedAt     time.Time            `bson:"updated_at" json:"updated_at"`
+	CurrentJobs   []primitive.ObjectID `bson:"current_jobs" json:"current_jobs"`
+	CompletedJobs []primitive.ObjectID `bson:"completed_jobs" json:"completed_jobs"`
+	CPUInfo       string               `bson:"cpu_info" json:"cpu_info"`
+	GPUInfo       string               `bson:"gpu_info" json:"gpu_info"`
+	RAMSizeGB     int32                `bson:"ram_size_gb" json:"ram_size_gb"`
 }

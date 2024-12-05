@@ -13,8 +13,9 @@ func ServerRoutes(r chi.Router) {
 	r.Patch("/servers/{id}", handlers.PatchServer)
 	r.Delete("/servers/{id}", handlers.DeleteServer)
 
-	//r.Get("/servers/{id}/tasks", handlers.GetServerTasks)                   // Список текущих заданий сервера
-	//r.Post("/servers/{id}/tasks", handlers.AddServerTask)                   // Добавление задания серверу
+	r.Get("/servers/{id}/currentJobs", handlers.GetServerCurrentJobs)
+	r.Get("/servers/{id}/completedJobs", handlers.GetServerCompletedJobs)
+	r.Post("/servers/{id}/jobs/{job_id}", handlers.AddJobToServer)
 	//r.Delete("/servers/{id}/tasks/{task_id}", handlers.RemoveServerTask)    // Удаление задания с сервера
 	//r.Post("/servers/{id}/tasks/{task_id}/complete", handlers.CompleteTask) // Завершение задания
 	//

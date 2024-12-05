@@ -237,3 +237,132 @@ func DeleteServer(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(map[string]string{"message": "Server deleted successfully"})
 }
+
+func GetServerCurrentJobs(w http.ResponseWriter, r *http.Request) {
+	serverID := chi.URLParam(r, "id")
+	serversCollection := db.GetCollection("servers")
+
+	serverIDObj, err := primitive.ObjectIDFromHex(serverID)
+	if err != nil {
+		http.Error(w, "Invalid server ID", http.StatusBadRequest)
+		return
+	}
+
+	var server models.Server
+	err = serversCollection.FindOne(context.Background(), bson.M{"_id": serverIDObj}).Decode(&server)
+	if err != nil {
+		http.Error(w, "Server not found", http.StatusNotFound)
+		return
+	}
+
+	jobsCollection := db.GetCollection("jobs")
+	cursor, err := jobsCollection.Find(context.Background(), bson.M{"_id": bson.M{"$in": server.CurrentJobs}})
+	if err != nil {
+		http.Error(w, "Error fetching current jobs", http.StatusInternalServerError)
+		return
+	}
+	defer cursor.Close(context.Background())
+
+	var jobs []models.Job
+	err = cursor.All(context.Background(), &jobs)
+	if err != nil {
+		http.Error(w, "Error processing current jobs", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(jobs)
+}
+
+func GetServerCompletedJobs(w http.ResponseWriter, r *http.Request) {
+	serverID := chi.URLParam(r, "id")
+	serversCollection := db.GetCollection("servers")
+
+	serverIDObj, err := primitive.ObjectIDFromHex(serverID)
+	if err != nil {
+		http.Error(w, "Invalid server ID", http.StatusBadRequest)
+		return
+	}
+
+	var server models.Server
+	err = serversCollection.FindOne(context.Background(), bson.M{"_id": serverIDObj}).Decode(&server)
+	if err != nil {
+		http.Error(w, "Server not found", http.StatusNotFound)
+		return
+	}
+
+	jobsCollection := db.GetCollection("jobs")
+	cursor, err := jobsCollection.Find(context.Background(), bson.M{"_id": bson.M{"$in": server.CompletedJobs}})
+	if err != nil {
+		http.Error(w, "Error fetching completed jobs", http.StatusInternalServerError)
+		return
+	}
+	defer cursor.Close(context.Background())
+
+	var jobs []models.Job
+	err = cursor.All(context.Background(), &jobs)
+	if err != nil {
+		http.Error(w, "Error processing completed jobs", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(jobs)
+}
+
+func AddJobToServer(w http.ResponseWriter, r *http.Request) {
+	serverID := chi.URLParam(r, "id")
+	jobID := chi.URLParam(r, "job_id")
+	serversCollection := db.GetCollection("servers")
+	jobsCollection := db.GetCollection("jobs")
+
+	serverIDObj, err := primitive.ObjectIDFromHex(serverID)
+	if err != nil {
+		http.Error(w, "Invalid server ID", http.StatusBadRequest)
+		return
+	}
+
+	jobIDObj, err := primitive.ObjectIDFromHex(jobID)
+	if err != nil {
+		http.Error(w, "Invalid job ID", http.StatusBadRequest)
+		return
+	}
+
+	var server models.Server
+	err = serversCollection.FindOne(context.Background(), bson.M{"_id": serverIDObj}).Decode(&server)
+	if err != nil {
+		http.Error(w, "Server not found", http.StatusNotFound)
+		return
+	}
+
+	var job models.Job
+	err = jobsCollection.FindOne(context.Background(), bson.M{"_id": jobIDObj}).Decode(&job)
+	if err != nil {
+		http.Error(w, "Job not found", http.StatusNotFound)
+		return
+	}
+
+	_, err = serversCollection.UpdateOne(
+		context.Background(),
+		bson.M{"_id": serverIDObj},
+		bson.M{"$push": bson.M{"current_jobs": jobIDObj}},
+	)
+	if err != nil {
+		http.Error(w, "Error adding job to server", http.StatusInternalServerError)
+		return
+	}
+
+	_, err = jobsCollection.UpdateOne(
+		context.Background(),
+		bson.M{"_id": jobIDObj},
+		bson.M{"$set": bson.M{"host_id": serverIDObj}},
+	)
+	if err != nil {
+		http.Error(w, "Error updating job with server info", http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(map[string]string{"message": "Job successfully added to server"})
+}
