@@ -17,20 +17,21 @@
     "email": "john.doe@example.com",
     "password_hash": "hashed_password_123",
     "permissions": "user",
-    "created_at":  "2023-11-01T12:00:00Z",
-    "updated_at":  "2023-11-01T12:00:00Z",
-    "last_login_at":  "2023-11-20T09:00:00Z",
+    "created_at": "2023-11-01T12:00:00Z",
+    "updated_at": "2023-11-01T12:00:00Z",
+    "last_login_at": "2023-11-20T09:00:00Z",
     "payments": [
       {
         "_id": { "$oid": "650e7c3e5f1e4e0001a0bdf2" },
         "price": "100.00",
         "payment_method": "credit_card",
         "payment_status": "completed",
-        "created_at":  "2023-11-10T10:00:00Z",
-        "updated_at":  "2023-11-10T10:30:00Z"
+        "created_at": "2023-11-10T10:00:00Z",
+        "updated_at": "2023-11-10T10:30:00Z",
+        "job_id": { "$oid": "650e7c3f5f1e4e0001a0bdf3" }
       }
     ],
-    "jobs": [ { "$oid": "650e7c3f5f1e4e0001a0bdf3" } ]
+    "jobs": [{ "$oid": "650e7c3f5f1e4e0001a0bdf3" }]
   },
   {
     "_id": { "$oid": "650e7d2f5f1e4e0001a0bdf5" },
@@ -38,20 +39,21 @@
     "email": "jane.smith@example.com",
     "password_hash": "hashed_password_456",
     "permissions": "admin",
-    "created_at":  "2023-10-15T09:00:00Z",
-    "updated_at":  "2023-10-15T09:00:00Z",
-    "last_login_at":  "2023-11-20T11:30:00Z",
+    "created_at": "2023-10-15T09:00:00Z",
+    "updated_at": "2023-10-15T09:00:00Z",
+    "last_login_at": "2023-11-20T11:30:00Z",
     "payments": [
       {
         "_id": { "$oid": "650e7d3e5f1e4e0001a0bdf6" },
         "price": "250.00",
         "payment_method": "paypal",
         "payment_status": "pending",
-        "created_at":  "2023-11-19T08:00:00Z" ,
-        "updated_at":  "2023-11-19T09:00:00Z"
+        "created_at": "2023-11-19T08:00:00Z",
+        "updated_at": "2023-11-19T09:00:00Z",
+        "job_id": { "$oid": "650e7d4f5f1e4e0001a0bdf7" }
       }
     ],
-    "jobs": [ { "$oid": "650e7d4f5f1e4e0001a0bdf7" } ]
+    "jobs": [{ "$oid": "650e7d4f5f1e4e0001a0bdf7" }]
   },
   {
     "_id": { "$oid": "650e7e2f5f1e4e0001a0bdf8" },
@@ -59,20 +61,21 @@
     "email": "alice.wonder@example.com",
     "password_hash": "hashed_password_789",
     "permissions": "user",
-    "created_at":  "2023-11-05T14:00:00Z" ,
-    "updated_at":  "2023-11-05T14:00:00Z" ,
-    "last_login_at":  "2023-11-21T10:00:00Z" ,
+    "created_at": "2023-11-05T14:00:00Z",
+    "updated_at": "2023-11-05T14:00:00Z",
+    "last_login_at": "2023-11-21T10:00:00Z",
     "payments": [
       {
         "_id": { "$oid": "650e7e3e5f1e4e0001a0bdf9" },
         "price": "50.00",
         "payment_method": "bank_transfer",
         "payment_status": "completed",
-        "created_at":  "2023-11-15T10:30:00Z" ,
-        "updated_at":  "2023-11-15T11:00:00Z"
+        "created_at": "2023-11-15T10:30:00Z",
+        "updated_at": "2023-11-15T11:00:00Z",
+        "job_id": { "$oid": "650e7e4f5f1e4e0001a0bdfa" }
       }
     ],
-    "jobs": [ { "$oid": "650e7e4f5f1e4e0001a0bdfa" } ]
+    "jobs": [{ "$oid": "650e7e4f5f1e4e0001a0bdfa" }]
   },
   {
     "_id": { "$oid": "650e7f2f5f1e4e0001a0bdfb" },
@@ -80,11 +83,11 @@
     "email": "bob.builder@example.com",
     "password_hash": "hashed_password_987",
     "permissions": "user",
-    "created_at":  "2023-09-20T08:00:00Z" ,
-    "updated_at":  "2023-09-20T08:00:00Z" ,
-    "last_login_at":  "2023-11-18T07:00:00Z" ,
+    "created_at": "2023-09-20T08:00:00Z",
+    "updated_at": "2023-09-20T08:00:00Z",
+    "last_login_at": "2023-11-18T07:00:00Z",
     "payments": [],
-    "jobs": [ { "$oid": "650e7f4f5f1e4e0001a0bdfc" } ]
+    "jobs": [{ "$oid": "650e7f4f5f1e4e0001a0bdfc" }]
   },
   {
     "_id": { "$oid": "650e802f5f1e4e0001a0bdfd" },
@@ -92,19 +95,20 @@
     "email": "charlie.chaplin@example.com",
     "password_hash": "hashed_password_654",
     "permissions": "moderator",
-    "created_at":  "2023-10-01T15:00:00Z" ,
-    "updated_at":  "2023-10-01T15:00:00Z" ,
-    "last_login_at":  "2023-11-22T18:00:00Z" ,
+    "created_at": "2023-10-01T15:00:00Z",
+    "updated_at": "2023-10-01T15:00:00Z",
+    "last_login_at": "2023-11-22T18:00:00Z",
     "payments": [
       {
         "_id": { "$oid": "650e803e5f1e4e0001a0bdfe" },
         "price": "120.00",
         "payment_method": "credit_card",
         "payment_status": "completed",
-        "created_at":  "2023-10-15T12:00:00Z" ,
-        "updated_at":  "2023-10-15T12:30:00Z"
+        "created_at": "2023-10-15T12:00:00Z",
+        "updated_at": "2023-10-15T12:30:00Z",
+        "job_id": { "$oid": "650e804f5f1e4e0001a0bdff" }
       }
     ],
-    "jobs": [ { "$oid": "650e804f5f1e4e0001a0bdff" } ]
+    "jobs": [{ "$oid": "650e804f5f1e4e0001a0bdff" }]
   }
 ]

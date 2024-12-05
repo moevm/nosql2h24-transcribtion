@@ -11,7 +11,8 @@
     "output_file": "transcription1.txt",
     "created_at": "2023-10-15T09:00:00Z",
     "updated_at": "2023-10-15T09:00:00Z",
-    "host_id": { "$oid": "650e822f5f1e4e0001a0be01" }
+    "host_id": { "$oid": "650e822f5f1e4e0001a0be01" },
+    "estimated_finish_datetime": "2023-10-15T11:00:00Z"
   },
   {
     "_id": { "$oid": "650e7c3f5f1e4e0001a0bdf4" },
@@ -25,7 +26,8 @@
     "output_file": "translated1.pdf",
     "created_at": "2023-11-12T11:30:00Z",
     "updated_at": "2023-11-12T11:30:00Z",
-    "host_id": { "$oid": "650e832f5f1e4e0001a0be02" }
+    "host_id": { "$oid": "650e832f5f1e4e0001a0be02" },
+    "estimated_finish_datetime": "2023-11-12T14:30:00Z"
   },
   {
     "_id": { "$oid": "650e7c3f5f1e4e0001a0bdf5" },
@@ -39,6 +41,7 @@
     "output_file": "processed1.csv",
     "created_at": "2023-11-18T15:00:00Z",
     "updated_at": "2023-11-18T15:00:00Z",
-    "host_id": { "$oid": "650e842f5f1e4e0001a0be03" }
+    "host_id": { "$oid": "650e842f5f1e4e0001a0be03" },
+    "estimated_finish_datetime": "2023-11-18T18:00:00Z"
   }
 ]
