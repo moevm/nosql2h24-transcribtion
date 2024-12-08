@@ -225,9 +225,8 @@ func DeleteServer(w http.ResponseWriter, r *http.Request) {
 	}
 
 	serversCollection := db.GetCollection("servers")
-	var server struct {
-		Tasks []primitive.ObjectID `bson:"tasks"`
-	}
+
+	var server models.Server
 	err = serversCollection.FindOne(context.Background(), bson.M{"_id": objectID}).Decode(&server)
 	if err != nil {
 		if errors.Is(err, mongo.ErrNoDocuments) {
@@ -238,8 +237,8 @@ func DeleteServer(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if len(server.Tasks) > 0 {
-		http.Error(w, "Cannot delete server with active tasks", http.StatusConflict)
+	if len(server.CurrentJobs) > 0 || len(server.CompletedJobs) > 0 {
+		http.Error(w, "Cannot delete server with associated jobs", http.StatusConflict)
 		return
 	}
 
