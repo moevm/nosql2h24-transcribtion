@@ -3,12 +3,14 @@ package handlers
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/render"
 	"github.com/moevm/nosql2h24-transcribtion/db"
 	"github.com/moevm/nosql2h24-transcribtion/models"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
 	"net/http"
 	"strconv"
 	"time"
@@ -208,7 +210,7 @@ func PatchServer(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	patchData.ID = objectID // Устанавливаем ID сервера
+	patchData.ID = objectID
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(patchData)
 }
@@ -223,6 +225,24 @@ func DeleteServer(w http.ResponseWriter, r *http.Request) {
 	}
 
 	serversCollection := db.GetCollection("servers")
+	var server struct {
+		Tasks []primitive.ObjectID `bson:"tasks"`
+	}
+	err = serversCollection.FindOne(context.Background(), bson.M{"_id": objectID}).Decode(&server)
+	if err != nil {
+		if errors.Is(err, mongo.ErrNoDocuments) {
+			http.Error(w, "Server not found", http.StatusNotFound)
+		} else {
+			http.Error(w, "Error fetching server details: "+err.Error(), http.StatusInternalServerError)
+		}
+		return
+	}
+
+	if len(server.Tasks) > 0 {
+		http.Error(w, "Cannot delete server with active tasks", http.StatusConflict)
+		return
+	}
+
 	result, err := serversCollection.DeleteOne(context.Background(), bson.M{"_id": objectID})
 	if err != nil {
 		http.Error(w, "Error deleting server", http.StatusInternalServerError)
