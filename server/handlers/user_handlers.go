@@ -31,6 +31,24 @@ import (
 // Ответ:
 // Возвращает список пользователей в формате JSON, соответствующих фильтрам и с учетом пагинации.
 // Если параметры запроса некорректны, возвращает ошибку с кодом 400 (Bad Request).
+
+//1. Получение всех пользователей без фильтров:
+//GET /users
+//2. Фильтрация по имени пользователя:
+//GET /users?username=John
+//3. Фильтрация по email:
+//GET /users?email=example@example.com
+//4. Фильтрация по дате создания (пользователи, созданные после указанной даты):
+//GET /users?created_after=2024-01-01
+//5. Фильтрация по статусу аккаунта:
+//GET /users?status=active
+//6. Комбинация фильтров (например, по имени пользователя и email):
+//GET /users?username=John&email=example@example.com
+//7. Пагинация с использованием параметров page и page_size (например, 2-я страница с 5 пользователями на странице):
+//GET /users?page=2&page_size=5
+//8. Комбинация фильтрации и пагинации:
+//GET /users?status=active&created_after=2024-01-01&page=1&page_size=10
+
 func GetUsers(w http.ResponseWriter, r *http.Request) {
 	queryParams := r.URL.Query()
 	filter := bson.M{}
@@ -131,6 +149,9 @@ func GetUsers(w http.ResponseWriter, r *http.Request) {
 //   - 400 Bad Request: Неверный формат ID пользователя.
 //   - 404 Not Found: Пользователь с таким ID не найден.
 //   - 500 Internal Server Error: Ошибка при запросе к базе данных.
+
+//GET /users/{id}
+
 func GetUserByID(w http.ResponseWriter, r *http.Request) {
 	userID := chi.URLParam(r, "id")
 	objectID, err := primitive.ObjectIDFromHex(userID)
@@ -171,6 +192,18 @@ func GetUserByID(w http.ResponseWriter, r *http.Request) {
 //   - 400 Bad Request: Ошибка при обновлении (например, отсутствуют поля для обновления).
 //   - 404 Not Found: Пользователь с таким ID не найден.
 //   - 500 Internal Server Error: Ошибка при обновлении пользователя или запросе к базе данных.
+
+/*
+PUT /users/{id}
+Content-Type: application/json
+
+{
+"username": "new_username",
+"email": "new_email@example.com",
+"permissions": "admin"
+}
+*/
+
 func UpdateUser(w http.ResponseWriter, r *http.Request) {
 	userID := chi.URLParam(r, "id")
 
@@ -221,20 +254,28 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(user)
 }
 
-// PatchUser частично обновляет информацию о пользователе по его уникальному ID.
-// Параметры:
-//   - id (URL параметр): ID пользователя, которого нужно обновить.
-//
-// Тело запроса:
-//   - username (string): Новое имя пользователя (опционально).
-//   - email (string): Новый email пользователя (опционально).
-//   - permissions (string): Новая роль/права пользователя (опционально).
-//
-// Ответ:
-//   - 200 OK: Возвращает обновленную информацию о пользователе (без пароля).
-//   - 400 Bad Request: Ошибка при обновлении (например, отсутствуют поля для обновления).
-//   - 404 Not Found: Пользователь с таким ID не найден.
-//   - 500 Internal Server Error: Ошибка при обновлении пользователя или запросе к базе данных.
+// PATCH /users/5fcbf22b923e992dcebf6f1a
+// В теле запроса клиент может отправить те поля пользователя, которые он хочет обновить (например, username, email, permissions, payments, jobs).
+// Важно, что только те поля, которые не пустые, будут включены в обновление.
+/*
+{
+    "username": "john_doe_updated",
+    "email": "john.doe.updated@example.com",
+    "permissions": "admin",
+    "payments": [
+        {
+            "payment_id": "12345",
+            "amount": 100,
+            "currency": "USD"
+        }
+    ],
+    "jobs": [
+        "5fcbf22b923e992dcebf6f1b"
+    ]
+}
+
+*/
+
 func PatchUser(w http.ResponseWriter, r *http.Request) {
 	userID := chi.URLParam(r, "id")
 	objectID, err := primitive.ObjectIDFromHex(userID)
@@ -248,7 +289,6 @@ func PatchUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	filter := bson.M{"_id": objectID}
-
 	updateFields := bson.M{}
 
 	if patchUser.Username != "" {
@@ -259,6 +299,12 @@ func PatchUser(w http.ResponseWriter, r *http.Request) {
 	}
 	if patchUser.Permissions != "" {
 		updateFields["permissions"] = patchUser.Permissions
+	}
+	if len(patchUser.Payments) > 0 {
+		updateFields["payments"] = patchUser.Payments
+	}
+	if len(patchUser.Jobs) > 0 {
+		updateFields["jobs"] = patchUser.Jobs
 	}
 
 	if len(updateFields) == 0 {
@@ -287,6 +333,25 @@ func PatchUser(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(user)
 }
 
+/*
+	{
+	    "username": "john_doe",
+	    "email": "john.doe@example.com",
+	    "password_hash": "hashed_password_value",
+	    "permissions": "admin"
+	}
+
+Ответ:
+
+	{
+	    "id": "5fcbf22b923e992dcebf6f1a",
+	    "username": "john_doe",
+	    "email": "john.doe@example.com",
+	    "permissions": "admin",
+	    "created_at": "2024-12-08T00:00:00Z",
+	    "updated_at": "2024-12-08T00:00:00Z"
+	}
+*/
 func CreateUser(w http.ResponseWriter, r *http.Request) {
 	var newUser models.User
 
@@ -301,17 +366,13 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	//hashedPassword, err := bcrypt.GenerateFromPassword([]byte(newUser.PasswordHash), bcrypt.DefaultCost)
-	//if err != nil {
-	//	http.Error(w, "Error hashing password", http.StatusInternalServerError)
-	//	return
-	//}
-	//newUser.PasswordHash = string(hashedPassword)
+	if newUser.Permissions == "" {
+		newUser.Permissions = "user" // по умолчанию
+	}
 
 	newUser.ID = primitive.NewObjectID()
 	newUser.CreatedAt = time.Now()
 	newUser.UpdatedAt = time.Now()
-	newUser.Permissions = "user"
 
 	usersCollection := db.GetCollection("users")
 
@@ -327,6 +388,7 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(newUser)
 }
 
+// DELETE /users/{userID}
 func DeleteUser(w http.ResponseWriter, r *http.Request) {
 	userID := chi.URLParam(r, "id")
 	id, err := primitive.ObjectIDFromHex(userID)
@@ -344,6 +406,10 @@ func DeleteUser(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusNoContent)
 }
+
+// GET /users/{userID}/jobs
+
+//Ответ - массив объектов Job
 
 func GetUserJobs(w http.ResponseWriter, r *http.Request) {
 	userID := chi.URLParam(r, "id")
@@ -378,6 +444,19 @@ func GetUserJobs(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(jobs)
 }
 
+/*
+POST /users/{userID}/jobs
+{
+  "title": "New Translation Job",
+  "status": "pending",
+  "source_language": "en",
+  "file_format": "pdf",
+  "description": "Translate a document from English to Spanish.",
+  "input_file": "input_file_path.pdf",
+  "output_file": "output_file_path.pdf"
+}
+*/
+
 func AddUserJob(w http.ResponseWriter, r *http.Request) {
 	userID := chi.URLParam(r, "id")
 	id, err := primitive.ObjectIDFromHex(userID)
@@ -392,10 +471,17 @@ func AddUserJob(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	const FinishDatetime = 15
 	job.ID = primitive.NewObjectID()
 	job.UserID = id
 	job.CreatedAt = time.Now()
 	job.UpdatedAt = job.CreatedAt
+	job.EstimatedFinishDatetime = time.Now().Add(FinishDatetime * time.Second)
+
+	if job.Title == "" || job.Status == "" || job.SourceLanguage == "" || job.FileFormat == "" || job.Description == "" || job.InputFile == "" || job.OutputFile == "" {
+		http.Error(w, "All fields are required", http.StatusBadRequest)
+		return
+	}
 
 	serversCollection := db.GetCollection("servers")
 	jobsCollection := db.GetCollection("jobs")
@@ -439,6 +525,7 @@ func AddUserJob(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(job)
 }
 
+// DELETE /users/{id}/jobs/{job_id}
 func DeleteUserJob(w http.ResponseWriter, r *http.Request) {
 	userID := chi.URLParam(r, "id")
 	jobID := chi.URLParam(r, "jobId")
@@ -469,6 +556,100 @@ func DeleteUserJob(w http.ResponseWriter, r *http.Request) {
 	)
 	if err != nil {
 		http.Error(w, "Error updating user jobs", http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusNoContent)
+}
+
+/*
+Запрос:
+POST /users/60d09c875d3b3c6b8d85a681/payments
+Content-Type: application/json
+
+Тело запроса:
+{
+	"price": "100.00",
+	"payment_method": "credit_card",
+	"payment_status": "completed",
+	"job_id": "60d09c875d3b3c6b8d85a683"
+}
+
+Ответ:
+{
+	"id": "60d09c875d3b3c6b8d85a685",
+	"price": "100.00",
+	"payment_method": "credit_card",
+	"payment_status": "completed",
+	"created_at": "2024-12-08T12:00:00Z",
+	"updated_at": "2024-12-08T12:00:00Z",
+	"job_id": "60d09c875d3b3c6b8d85a683"
+}
+*/
+
+func AddPayment(w http.ResponseWriter, r *http.Request) {
+	userID := chi.URLParam(r, "id")
+	objectID, err := primitive.ObjectIDFromHex(userID)
+	if err != nil {
+		http.Error(w, "Invalid user ID format", http.StatusBadRequest)
+		return
+	}
+
+	var payment models.Payment
+	if err := render.DecodeJSON(r.Body, &payment); err != nil {
+		http.Error(w, "Invalid input", http.StatusBadRequest)
+		return
+	}
+
+	payment.CreatedAt = time.Now()
+	payment.UpdatedAt = time.Now()
+
+	filter := bson.M{"_id": objectID}
+
+	update := bson.M{
+		"$push": bson.M{
+			"payments": payment,
+		},
+	}
+
+	_, err = db.GetCollection("users").UpdateOne(context.Background(), filter, update)
+	if err != nil {
+		http.Error(w, "Error adding payment", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(payment)
+}
+
+// DELETE /users/60d09c875d3b3c6b8d85a681/payments/60d09c875d3b3c6b8d85a685
+func DeletePayment(w http.ResponseWriter, r *http.Request) {
+	userID := chi.URLParam(r, "id")
+	paymentID := chi.URLParam(r, "payment_id")
+
+	objectID, err := primitive.ObjectIDFromHex(userID)
+	if err != nil {
+		http.Error(w, "Invalid user ID format", http.StatusBadRequest)
+		return
+	}
+
+	paymentObjectID, err := primitive.ObjectIDFromHex(paymentID)
+	if err != nil {
+		http.Error(w, "Invalid payment ID format", http.StatusBadRequest)
+		return
+	}
+
+	filter := bson.M{"_id": objectID}
+	update := bson.M{
+		"$pull": bson.M{
+			"payments": bson.M{"_id": paymentObjectID},
+		},
+	}
+
+	_, err = db.GetCollection("users").UpdateOne(context.Background(), filter, update)
+	if err != nil {
+		http.Error(w, "Error deleting payment", http.StatusInternalServerError)
 		return
 	}
 

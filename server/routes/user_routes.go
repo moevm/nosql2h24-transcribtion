@@ -18,4 +18,7 @@ func UserRoutes(r chi.Router) {
 	r.Get("/users/{id}/jobs", handlers.GetUserJobs)
 	r.Post("/users/{id}/jobs", handlers.AddUserJob)
 	r.Delete("/users/{id}/jobs/{jobId}", handlers.DeleteUserJob)
+
+	r.Post("/users/{id}/payments", handlers.AddPayment)
+	r.Delete("/users/{id}/payments/{payment_id}", handlers.DeletePayment)
 }

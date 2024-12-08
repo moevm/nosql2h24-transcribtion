@@ -22,6 +22,8 @@ import (
 // @Param cpu"Фильтр по CPU"
 // @Param gpu "Фильтр по GPU"
 // @Param ram query int  "Фильтр по МИНИМАЛЬНОМУ объему RAM в ГБ"
+
+// GET /servers?status=active&cpu=Intel&gpu=NVIDIA&ram=16
 func GetServers(w http.ResponseWriter, r *http.Request) {
 	queryParams := r.URL.Query()
 	status := queryParams.Get("status")
@@ -93,6 +95,7 @@ func GetServerByID(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(server)
 }
 
+// GET /servers/{id}
 func CreateServer(w http.ResponseWriter, r *http.Request) {
 	var newServer models.Server
 	if err := render.DecodeJSON(r.Body, &newServer); err != nil {
@@ -122,6 +125,17 @@ func CreateServer(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(newServer)
 }
 
+/*
+PUT /servers/607f1f77bcf86cd799439011
+
+	{
+	  "hostname": "new-server-name",
+	  "address": "192.168.1.10",
+	  "status": "inactive",
+	  "cpu_info": "Intel Xeon E5",
+	  "ram_size_gb": 64
+	}
+*/
 func UpdateServer(w http.ResponseWriter, r *http.Request) {
 	serverID := chi.URLParam(r, "id")
 	objectID, err := primitive.ObjectIDFromHex(serverID)
@@ -156,6 +170,19 @@ func UpdateServer(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(updatedServer)
 }
 
+/*
+PATCH /servers/607f1f77bcf86cd799439011
+
+	{
+	  "hostname": "new-server-name",
+	  "address": "192.168.1.10",
+	  "description": "Updated server description",
+	  "status": "inactive",
+	  "cpu_info": "Intel Xeon E5",
+	  "gpu_info": "NVIDIA Tesla",
+	  "ram_size_gb": 64
+	}
+*/
 func PatchServer(w http.ResponseWriter, r *http.Request) {
 	serverID := chi.URLParam(r, "id")
 	objectID, err := primitive.ObjectIDFromHex(serverID)
@@ -215,6 +242,7 @@ func PatchServer(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(patchData)
 }
 
+// DELETE /servers/{id}
 func DeleteServer(w http.ResponseWriter, r *http.Request) {
 	serverID := chi.URLParam(r, "id")
 
@@ -257,6 +285,7 @@ func DeleteServer(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(map[string]string{"message": "Server deleted successfully"})
 }
 
+// Get /servers/{id}/currentJobs
 func GetServerCurrentJobs(w http.ResponseWriter, r *http.Request) {
 	serverID := chi.URLParam(r, "id")
 	serversCollection := db.GetCollection("servers")
@@ -293,6 +322,7 @@ func GetServerCurrentJobs(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(jobs)
 }
 
+// Get /servers/{id}/completedJobs
 func GetServerCompletedJobs(w http.ResponseWriter, r *http.Request) {
 	serverID := chi.URLParam(r, "id")
 	serversCollection := db.GetCollection("servers")
