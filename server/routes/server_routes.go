@@ -15,9 +15,7 @@ func ServerRoutes(r chi.Router) {
 
 	r.Get("/servers/{id}/currentJobs", handlers.GetServerCurrentJobs)
 	r.Get("/servers/{id}/completedJobs", handlers.GetServerCompletedJobs)
+	//В целом следующий роут не нужен, все сразу делается через юзера
 	r.Post("/servers/{id}/jobs/{job_id}", handlers.AddJobToServer)
-	//r.Delete("/servers/{id}/tasks/{task_id}", handlers.RemoveServerTask)    // Удаление задания с сервера
-	//r.Post("/servers/{id}/tasks/{task_id}/complete", handlers.CompleteTask) // Завершение задания
-	//
-	//r.Patch("/servers/{id}/status", handlers.UpdateServerStatus) // Обновление статуса сервера
+
 }

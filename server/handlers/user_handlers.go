@@ -9,6 +9,7 @@ import (
 	"github.com/go-chi/render"
 	"github.com/moevm/nosql2h24-transcribtion/db"
 	"github.com/moevm/nosql2h24-transcribtion/models"
+	"github.com/moevm/nosql2h24-transcribtion/scheduler"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -396,14 +397,34 @@ func AddUserJob(w http.ResponseWriter, r *http.Request) {
 	job.CreatedAt = time.Now()
 	job.UpdatedAt = job.CreatedAt
 
+	serversCollection := db.GetCollection("servers")
 	jobsCollection := db.GetCollection("jobs")
+	usersCollection := db.GetCollection("users")
+
+	servers, err := schedul.GetServers(serversCollection)
+	if err != nil {
+		http.Error(w, "Error fetching servers: "+err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	selectedServer, err := schedul.SelectServerWithMinJobs(servers)
+	if err != nil {
+		http.Error(w, "Error selecting server: "+err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	job.HostID = selectedServer.ID
+	if err := schedul.AddJobToServer(serversCollection, selectedServer.ID, job.ID); err != nil {
+		http.Error(w, "Error adding job to server: "+err.Error(), http.StatusInternalServerError)
+		return
+	}
+
 	_, err = jobsCollection.InsertOne(context.Background(), job)
 	if err != nil {
 		http.Error(w, "Error saving job", http.StatusInternalServerError)
 		return
 	}
 
-	usersCollection := db.GetCollection("users")
 	_, err = usersCollection.UpdateOne(context.Background(),
 		bson.M{"_id": id},
 		bson.M{"$push": bson.M{"jobs": job.ID}},
