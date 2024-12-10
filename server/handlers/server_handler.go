@@ -304,6 +304,11 @@ func GetServerCurrentJobs(w http.ResponseWriter, r *http.Request) {
 	}
 
 	jobsCollection := db.GetCollection("jobs")
+	err = UpdateJobsStatus(jobsCollection)
+	if err != nil {
+		http.Error(w, "Error while updating jobs", http.StatusInternalServerError)
+		return
+	}
 	cursor, err := jobsCollection.Find(context.Background(), bson.M{"_id": bson.M{"$in": server.CurrentJobs}})
 	if err != nil {
 		http.Error(w, "Error fetching current jobs", http.StatusInternalServerError)
@@ -341,6 +346,11 @@ func GetServerCompletedJobs(w http.ResponseWriter, r *http.Request) {
 	}
 
 	jobsCollection := db.GetCollection("jobs")
+	err = UpdateJobsStatus(jobsCollection)
+	if err != nil {
+		http.Error(w, "Error while updating jobs", http.StatusInternalServerError)
+		return
+	}
 	cursor, err := jobsCollection.Find(context.Background(), bson.M{"_id": bson.M{"$in": server.CompletedJobs}})
 	if err != nil {
 		http.Error(w, "Error fetching completed jobs", http.StatusInternalServerError)

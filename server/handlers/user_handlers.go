@@ -14,6 +14,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"log"
 	"net/http"
 	"strconv"
 	"time"
@@ -428,6 +429,11 @@ func GetUserJobs(w http.ResponseWriter, r *http.Request) {
 	}
 
 	jobsCollection := db.GetCollection("jobs")
+	err = UpdateJobsStatus(jobsCollection)
+	if err != nil {
+		http.Error(w, "Error while updating jobs", http.StatusInternalServerError)
+		return
+	}
 	var jobs []models.Job
 	cursor, err := jobsCollection.Find(context.Background(), bson.M{"_id": bson.M{"$in": user.Jobs}})
 	if err != nil {
@@ -471,7 +477,8 @@ func AddUserJob(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	const FinishDatetime = 15
+	const FinishDatetime = 30
+
 	job.ID = primitive.NewObjectID()
 	job.UserID = id
 	job.CreatedAt = time.Now()
@@ -654,4 +661,53 @@ func DeletePayment(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusNoContent)
+}
+
+func UpdateJobsStatus(jobsCollection *mongo.Collection) error {
+	filter := bson.M{
+		"status": bson.M{"$ne": "completed"},
+	}
+
+	cursor, err := jobsCollection.Find(context.Background(), filter)
+	if err != nil {
+		return err
+	}
+	defer cursor.Close(context.Background())
+
+	currentTime := time.Now()
+
+	// Пробегаем по задачам.
+	for cursor.Next(context.Background()) {
+		var job struct {
+			ID                      interface{} `bson:"_id"`
+			EstimatedFinishDatetime time.Time   `bson:"estimated_finish_datetime"`
+			Status                  string      `bson:"status"`
+		}
+
+		if err := cursor.Decode(&job); err != nil {
+			log.Printf("Error decoding job: %v", err)
+			continue
+		}
+
+		// Если задача выполнена, обновляем её статус.
+		if job.EstimatedFinishDatetime.Before(currentTime) && job.Status != "completed" {
+			update := bson.M{
+				"$set": bson.M{
+					"status":     "completed",
+					"updated_at": currentTime,
+				},
+			}
+
+			_, err := jobsCollection.UpdateOne(context.Background(), bson.M{"_id": job.ID}, update)
+			if err != nil {
+				log.Printf("Error updating job %v: %v", job.ID, err)
+				continue
+			}
+			log.Printf("Updated job %v to completed", job.ID)
+		}
+	}
+	if err := cursor.Err(); err != nil {
+		return err
+	}
+	return nil
 }
