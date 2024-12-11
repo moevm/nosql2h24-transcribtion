@@ -22,6 +22,11 @@
       <input type="text" v-model="cardHolder" required placeholder="John Doe" />
     </div>
 
+    <div>
+      <label>Money:</label>
+      <input type="text" v-model="moneyAmount" required placeholder="100 $" />
+    </div>
+
     <button type="submit">Submit</button>
     <button type="button" @click="$emit('close')">Cancel</button>
   </form>
@@ -36,6 +41,7 @@ export default {
     const cvv = ref('');
     const expiryDate = ref('');
     const cardHolder = ref('');
+    const moneyAmount = ref('');
 
     const handleBillingSubmit = () => {
       console.log({
@@ -43,6 +49,7 @@ export default {
         cvv: cvv.value,
         expiryDate: expiryDate.value,
         cardHolder: cardHolder.value,
+        moneyAmount: moneyAmount.value,
       });
       alert('Billing information submitted successfully!');
       emit('close');
@@ -53,6 +60,7 @@ export default {
       cvv,
       expiryDate,
       cardHolder,
+      moneyAmount,
       handleBillingSubmit,
     };
   },
