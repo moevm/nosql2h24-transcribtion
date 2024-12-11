@@ -3,7 +3,7 @@
     <h1>User Panel</h1>
 
     <div class="buttons">
-      <button @click="createTask">Create Task</button>
+      <button @click="openCreateTask">Create Task</button>
       <button @click="openEditProfile">Edit Profile</button>
       <button @click="getAccess">Get Access</button>
       <button @click="searchTasks">Search for Tasks</button>
@@ -23,6 +23,13 @@
         </tr>
       </tbody>
     </table>
+
+    <!-- Create Task Modal -->
+    <div v-if="showCreateTask" class="modal-overlay">
+      <div class="modal">
+        <CreateTaskForm @create="handleCreateTask" @close="closeCreateTask" />
+      </div>
+    </div>
 
     <!-- Edit Profile Modal -->
     <div v-if="showEditProfile" class="modal-overlay">
@@ -48,9 +55,10 @@
 import { ref } from 'vue';
 import EditProfileForm from '../components/EditProfileForm.vue';
 import TaskDetailForm from '../components/TaskDetailForm.vue';
+import CreateTaskForm from '../components/CreateTaskForm.vue';
 
 export default {
-  components: { EditProfileForm, TaskDetailForm },
+  components: { EditProfileForm, TaskDetailForm, CreateTaskForm },
   setup() {
     // Sample tasks data
     const tasks = ref([
@@ -99,6 +107,16 @@ export default {
       selectedTask.value = null;
     };
 
+    const showCreateTask = ref(false);
+
+    const openCreateTask = () => {
+      showCreateTask.value = true;
+    };
+
+    const closeCreateTask = () => {
+      showCreateTask.value = false;
+    };
+
 
     // Button click handlers
     const createTask = () => {
@@ -132,6 +150,10 @@ export default {
       showEditProfile,
       userData,
       selectedTask,
+      showCreateTask,
+        openCreateTask,
+        closeCreateTask,
+
       selectTask,
       closeTaskDetail,
       createTask,
