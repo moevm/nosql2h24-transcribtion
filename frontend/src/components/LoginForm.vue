@@ -18,6 +18,7 @@
 </template>
 
 <script>
+import { useRouter } from 'vue-router';
 import { ref } from 'vue';
 
 export default {
@@ -25,6 +26,7 @@ export default {
     const email = ref('');
     const password = ref('');
     const errorMessage = ref('');
+    const router = useRouter();
 
     const handleLogin = () => {
       if (!email.value || !password.value) {
@@ -32,13 +34,16 @@ export default {
         return;
       }
       errorMessage.value = '';
+
+      // Simulate successful login (replace with real authentication logic)
       console.log({ email: email.value, password: password.value });
-      // Call API or handle login logic here
+      router.push('/user-panel');
     };
 
     return { email, password, handleLogin, errorMessage };
   },
 };
+
 </script>
 
 <style scoped>
