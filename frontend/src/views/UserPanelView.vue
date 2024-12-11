@@ -6,7 +6,7 @@
       <button @click="openCreateTask">Create Task</button>
       <button @click="openEditProfile">Edit Profile</button>
       <button @click="openBillingForm">Billing</button>
-      <button @click="searchTasks">Search for Tasks</button>
+      <button @click="openSearchPanel">Search for Tasks</button>
     </div>
 
     <table>
@@ -53,6 +53,14 @@
       </div>
     </div>
 
+    <!-- Search Panel Modal -->
+    <div v-if="showSearchPanel" class="modal-overlay">
+      <div class="modal">
+        <SearchPanel />
+        <button class="close-button" @click="closeSearchPanel">Close</button>
+      </div>
+    </div>
+
   </div>
 </template>
 
@@ -62,9 +70,10 @@ import EditProfileForm from '../components/EditProfileForm.vue';
 import TaskDetailForm from '../components/TaskDetailForm.vue';
 import CreateTaskForm from '../components/CreateTaskForm.vue';
 import BillingForm from '../components/BillingForm.vue';
+import SearchPanel from '../components/SearchPanel.vue';
 
 export default {
-  components: { EditProfileForm, TaskDetailForm, CreateTaskForm, BillingForm },
+  components: { EditProfileForm, TaskDetailForm, CreateTaskForm, BillingForm, SearchPanel },
   setup() {
     // Sample tasks data
     const tasks = ref([
@@ -128,6 +137,17 @@ export default {
     const closeBillingForm = () => (showBillingForm.value = false);
 
 
+    const showSearchPanel = ref(false);
+
+    const openSearchPanel = () => {
+      showSearchPanel.value = true;
+    };
+
+    const closeSearchPanel = () => {
+      showSearchPanel.value = false;
+    };
+
+
     // Button click handlers
     const createTask = () => {
       alert('Create Task button clicked');
@@ -167,6 +187,10 @@ export default {
         showBillingForm,
         openBillingForm,
         closeBillingForm,
+
+        showSearchPanel,
+      openSearchPanel,
+      closeSearchPanel,
 
       selectTask,
       closeTaskDetail,
