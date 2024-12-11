@@ -5,7 +5,7 @@
     <div class="buttons">
       <button @click="openCreateTask">Create Task</button>
       <button @click="openEditProfile">Edit Profile</button>
-      <button @click="getAccess">Get Access</button>
+      <button @click="openBillingForm">Billing</button>
       <button @click="searchTasks">Search for Tasks</button>
     </div>
 
@@ -46,7 +46,12 @@
       </div>
     </div>
 
-
+    <!-- Billing Form Modal -->
+    <div v-if="showBillingForm" class="modal-overlay">
+      <div class="modal">
+        <BillingForm @close="closeBillingForm" />
+      </div>
+    </div>
 
   </div>
 </template>
@@ -56,9 +61,10 @@ import { ref } from 'vue';
 import EditProfileForm from '../components/EditProfileForm.vue';
 import TaskDetailForm from '../components/TaskDetailForm.vue';
 import CreateTaskForm from '../components/CreateTaskForm.vue';
+import BillingForm from '../components/BillingForm.vue';
 
 export default {
-  components: { EditProfileForm, TaskDetailForm, CreateTaskForm },
+  components: { EditProfileForm, TaskDetailForm, CreateTaskForm, BillingForm },
   setup() {
     // Sample tasks data
     const tasks = ref([
@@ -117,6 +123,10 @@ export default {
       showCreateTask.value = false;
     };
 
+    const showBillingForm = ref(false);
+    const openBillingForm = () => (showBillingForm.value = true);
+    const closeBillingForm = () => (showBillingForm.value = false);
+
 
     // Button click handlers
     const createTask = () => {
@@ -153,6 +163,10 @@ export default {
       showCreateTask,
         openCreateTask,
         closeCreateTask,
+    
+        showBillingForm,
+        openBillingForm,
+        closeBillingForm,
 
       selectTask,
       closeTaskDetail,
