@@ -50,37 +50,57 @@ import (
 //8. Комбинация фильтрации и пагинации:
 //GET /users?status=active&created_after=2024-01-01&page=1&page_size=10
 
+//Получить пользователей, созданных после 2024-01-01:
+//GET /users?created_after=2024-01-01
+//Получить пользователей, созданных до 2024-12-31:
+//GET /users?created_before=2024-12-31
+//Получить пользователей, созданных в 2024 году:
+//GET /users?created_after=2024-01-01&created_before=2024-12-31
+
 func GetUsers(w http.ResponseWriter, r *http.Request) {
 	queryParams := r.URL.Query()
 	filter := bson.M{}
 
 	// Фильтрация по имени пользователя (например, ?username=John)
 	if username := queryParams.Get("username"); username != "" {
-		filter["username"] = username
+		filter["username"] = bson.M{"$regex": username, "$options": "i"} // Нерегистрозависимый поиск
 	}
 
 	// Фильтрация по email (например, ?email=example@example.com)
 	if email := queryParams.Get("email"); email != "" {
-		filter["email"] = email
+		filter["email"] = bson.M{"$regex": email, "$options": "i"} // Нерегистрозависимый поиск
 	}
 
-	// Фильтрация по дате создания (например, ?created_after=2024-01-01)
+	// Фильтрация по дате создания (диапазон)
+	createdAtFilter := bson.M{}
 	if createdAfter := queryParams.Get("created_after"); createdAfter != "" {
 		createdAfterTime, err := time.Parse("2006-01-02", createdAfter)
 		if err != nil {
 			http.Error(w, "Invalid created_after date format", http.StatusBadRequest)
 			return
 		}
-		filter["created_at"] = bson.M{"$gte": createdAfterTime}
+		createdAtFilter["$gte"] = createdAfterTime
+	}
+	if createdBefore := queryParams.Get("created_before"); createdBefore != "" {
+		createdBeforeTime, err := time.Parse("2006-01-02", createdBefore)
+		if err != nil {
+			http.Error(w, "Invalid created_before date format", http.StatusBadRequest)
+			return
+		}
+		createdAtFilter["$lte"] = createdBeforeTime
+	}
+	if len(createdAtFilter) > 0 {
+		filter["created_at"] = createdAtFilter
 	}
 
 	// Фильтрация по статусу аккаунта (например, ?status=active)
 	if status := queryParams.Get("status"); status != "" {
-		filter["status"] = status
+		filter["status"] = bson.M{"$regex": status, "$options": "i"} // Нерегистрозависимый поиск
 	}
 
 	usersCollection := db.GetCollection("users")
 
+	// Пагинация
 	page := queryParams.Get("page")
 	pageSize := queryParams.Get("page_size")
 	var pageNum, pageSizeInt int64

@@ -21,6 +21,7 @@ func NewRouter() chi.Router {
 
 	UserRoutes(r)
 	ServerRoutes(r)
+	bdDumpRoutes(r)
 
 	return r
 }
