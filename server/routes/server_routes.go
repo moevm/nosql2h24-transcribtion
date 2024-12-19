@@ -8,7 +8,7 @@ import (
 func ServerRoutes(r chi.Router) {
 	r.Get("/servers", handlers.GetServers)
 	r.Get("/servers/{id}", handlers.GetServerByID)
-	r.Post("/servers", handlers.CreateServer)
+	r.Post("/servers", handlers.CreateServer) // Этот роут юзай для создания сервера
 	r.Put("/servers/{id}", handlers.UpdateServer)
 	r.Patch("/servers/{id}", handlers.PatchServer)
 	r.Delete("/servers/{id}", handlers.DeleteServer)

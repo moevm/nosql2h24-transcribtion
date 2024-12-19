@@ -96,6 +96,16 @@ func GetServerByID(w http.ResponseWriter, r *http.Request) {
 }
 
 // GET /servers/{id}
+//{
+//	"hostname": "server-01",
+//	"address": "192.168.1.1",
+//	"description": "Main server for processing tasks",
+//	"status": "active",
+//	"cpu_info": "Intel Xeon E5-2670",
+//	"gpu_info": "NVIDIA Tesla V100",
+//	"ram_size_gb": 128
+//}
+
 func CreateServer(w http.ResponseWriter, r *http.Request) {
 	var newServer models.Server
 	if err := render.DecodeJSON(r.Body, &newServer); err != nil {
@@ -103,14 +113,16 @@ func CreateServer(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if newServer.Hostname == "" || newServer.Address == "" { //Уточнить, какие поля обязательные
+	if newServer.Hostname == "" || newServer.Address == "" {
 		http.Error(w, "Hostname and Address are required", http.StatusBadRequest)
 		return
 	}
 
+	newServer.CurrentJobs = []primitive.ObjectID{}
+	newServer.CompletedJobs = []primitive.ObjectID{}
+
 	newServer.CreatedAt = time.Now()
 	newServer.UpdatedAt = time.Now()
-
 	newServer.ID = primitive.NewObjectID()
 	serversCollection := db.GetCollection("servers")
 
