@@ -22,8 +22,8 @@
 <script>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { useStore } from 'vuex';
 import { createUser } from '../api/userApi';
+import { useUserStore } from '../store/user';
 
 export default {
   setup() {
@@ -31,7 +31,7 @@ export default {
     const email = ref('');
     const password = ref('');
     const router = useRouter();
-    const store = useStore();
+    const userStore = useUserStore();
 
     const handleRegister = async () => {
       try {
@@ -41,7 +41,11 @@ export default {
           password_hash: password.value, // Assuming the backend hashes the password
         };
         const user = await createUser(userData);
-        store.dispatch('login', user);
+        userStore.email = user.email;
+        userStore.username = user.username;
+        userStore.id = user.id;
+        userStore.password_hash = user.password_hash;
+
         alert('Registration successful!');
         router.push('/user-panel');
       } catch (error) {
