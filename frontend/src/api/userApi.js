@@ -59,7 +59,7 @@ export const getUserJobs = async (id) => {
 export const addUserJob = async (userId, formData) => {
   const response = await fetch(`${BASE_URL}/users/${userId}/jobs`, {
     method: 'POST',
-    body: formData,
+    body: JSON.stringify(formData),
   });
   return response.json();
 };
