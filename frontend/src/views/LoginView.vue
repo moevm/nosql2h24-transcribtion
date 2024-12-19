@@ -25,7 +25,7 @@ import { useUserStore } from '../store/user';
 
 export default {
   setup() {
-    const email = ref('');
+    const email = ref('alice.wonder@example.com');
     const password = ref('');
     const router = useRouter();
     const store = useStore();
@@ -38,32 +38,22 @@ export default {
           password: password.value,
         };
         console.log(userData.email, userData.password);
-        if (userData.email === 'user@gmail.com' && userData.password === 'user') {
+        
+        const users = await getUsers()
 
-          userStore.password_hash = userData.password;
-          userStore.email = userData.email;
-          userStore.username = 'TEST USER';
-          userStore.id = '-1';
+        // Проверка, если ли юзер в бд
+        users.forEach(usr => {
+          console.log(usr)
+          if (usr.email === userData.email && usr.password_hash === userData.password && usr.permissions === 'user') {
+            userStore.password_hash = userData.password;
+            userStore.email = userData.email;
+            userStore.username = usr.username;
+            userStore.id = usr.id;
 
-          router.push('/user-panel');
-          return;
-        }
-        else {
-          const users = await getUsers()
-
-          // Проверка, если ли юзер в бд
-          users.forEach(usr => {
-            if (usr.email === userData.email && usr.password_hash === userData.password) {
-              userStore.password_hash = userData.password;
-              userStore.email = userData.email;
-              userStore.username = usr.username;
-              userStore.id = usr.id;
-            }
-          });
-        }
-
-        alert('все круто');
-        router.push('/user-panel');
+            router.push('/user-panel');
+            return
+          }
+        });
       } catch (error) {
         alert('Неправильно введены логин или пароль');
       }
