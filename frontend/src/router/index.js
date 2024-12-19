@@ -4,6 +4,7 @@ import RegisterView from '../views/RegisterView.vue';
 import LoginView from '../views/LoginView.vue';
 import UserPanelView from '../views/UserPanelView.vue';
 import UserJobsView from '../views/UserJobsView.vue';
+import AdminPanelView from '../views/AdminPanelView.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -24,6 +25,7 @@ const router = createRouter({
     { path: '/register', name: 'Register', component: RegisterView },
     { path: '/login', name: 'Login', component: LoginView },
     { path: '/user-panel', name: 'UserPanel', component: UserPanelView },
+    { path: '/admin-panel', name: 'AdminPanel', component: AdminPanelView },
     { path: '/user/:id/jobs', name: 'UserJobs', component: UserJobsView },
   ],
 })

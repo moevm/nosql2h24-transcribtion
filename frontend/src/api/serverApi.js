@@ -1,5 +1,5 @@
 // frontend/src/api/serverApi.js
-const BASE_URL = 'http://your-backend-url/api';
+const BASE_URL = 'http://localhost:8080';
 
 export const getServers = async () => {
   const response = await fetch(`${BASE_URL}/servers`);
