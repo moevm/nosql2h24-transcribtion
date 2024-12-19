@@ -12,7 +12,7 @@
     "jobs": []
   },
   {
-    "_id": { "$oid": "650e7c2f5f1e4e0001a0bdf1" },
+    "_id": { "$oid": "650e812f5f1e4e0001a0be01" },
     "username": "john_doe",
     "email": "john.doe@example.com",
     "password_hash": "hashed_password_123",
@@ -34,7 +34,7 @@
     "jobs": [{ "$oid": "650e7c3f5f1e4e0001a0bdf3" }]
   },
   {
-    "_id": { "$oid": "650e7d2f5f1e4e0001a0bdf5" },
+    "_id": { "$oid": "650e812f5f1e4e0001a0be02" },
     "username": "jane_smith",
     "email": "jane.smith@example.com",
     "password_hash": "hashed_password_456",
@@ -50,13 +50,13 @@
         "payment_status": "pending",
         "created_at": "2023-11-19T08:00:00Z",
         "updated_at": "2023-11-19T09:00:00Z",
-        "job_id": { "$oid": "650e7d4f5f1e4e0001a0bdf7" }
+        "job_id": { "$oid": "650e7c3f5f1e4e0001a0bdf4" }
       }
     ],
-    "jobs": [{ "$oid": "650e7d4f5f1e4e0001a0bdf7" }]
+    "jobs": [{ "$oid": "650e7c3f5f1e4e0001a0bdf4" }]
   },
   {
-    "_id": { "$oid": "650e7e2f5f1e4e0001a0bdf8" },
+    "_id": { "$oid": "650e812f5f1e4e0001a0be03" },
     "username": "alice_wonder",
     "email": "alice.wonder@example.com",
     "password_hash": "hashed_password_789",
@@ -72,13 +72,13 @@
         "payment_status": "completed",
         "created_at": "2023-11-15T10:30:00Z",
         "updated_at": "2023-11-15T11:00:00Z",
-        "job_id": { "$oid": "650e7e4f5f1e4e0001a0bdfa" }
+        "job_id": { "$oid": "650e7c3f5f1e4e0001a0bdf5" }
       }
     ],
-    "jobs": [{ "$oid": "650e7e4f5f1e4e0001a0bdfa" }]
+    "jobs": [{ "$oid": "650e7c3f5f1e4e0001a0bdf5" }]
   },
   {
-    "_id": { "$oid": "650e7f2f5f1e4e0001a0bdfb" },
+    "_id": { "$oid": "650e812f5f1e4e0001a0be04" },
     "username": "bob_builder",
     "email": "bob.builder@example.com",
     "password_hash": "hashed_password_987",
@@ -87,28 +87,6 @@
     "updated_at": "2023-09-20T08:00:00Z",
     "last_login_at": "2023-11-18T07:00:00Z",
     "payments": [],
-    "jobs": [{ "$oid": "650e7f4f5f1e4e0001a0bdfc" }]
-  },
-  {
-    "_id": { "$oid": "650e802f5f1e4e0001a0bdfd" },
-    "username": "charlie_chaplin",
-    "email": "charlie.chaplin@example.com",
-    "password_hash": "hashed_password_654",
-    "permissions": "moderator",
-    "created_at": "2023-10-01T15:00:00Z",
-    "updated_at": "2023-10-01T15:00:00Z",
-    "last_login_at": "2023-11-22T18:00:00Z",
-    "payments": [
-      {
-        "_id": { "$oid": "650e803e5f1e4e0001a0bdfe" },
-        "price": "120.00",
-        "payment_method": "credit_card",
-        "payment_status": "completed",
-        "created_at": "2023-10-15T12:00:00Z",
-        "updated_at": "2023-10-15T12:30:00Z",
-        "job_id": { "$oid": "650e804f5f1e4e0001a0bdff" }
-      }
-    ],
-    "jobs": [{ "$oid": "650e804f5f1e4e0001a0bdff" }]
+    "jobs": []
   }
 ]

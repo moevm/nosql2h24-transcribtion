@@ -1,6 +1,6 @@
 [
   {
-    "_id": { "$oid": "650e822f5f1e4e0001a0be01" },
+    "_id": { "$oid": "650e822f5f1e4e0001a0be11" },
     "hostname": "server_1",
     "address": "192.168.1.1",
     "description": "Main processing server for jobs.",
@@ -10,15 +10,13 @@
     "current_jobs": [
       { "$oid": "650e7c3f5f1e4e0001a0bdf3" }
     ],
-    "completed_jobs": [
-      { "$oid": "650e7c3f5f1e4e0001a0bdf7" }
-    ],
+    "completed_jobs": [],
     "cpu_info": "Intel Xeon E5-2680 v4",
     "gpu_info": "NVIDIA Tesla V100",
     "ram_size_gb": 256
   },
   {
-    "_id": { "$oid": "650e832f5f1e4e0001a0be02" },
+    "_id": { "$oid": "650e832f5f1e4e0001a0be12" },
     "hostname": "server_2",
     "address": "192.168.1.2",
     "description": "Backup server for job processing.",
@@ -26,13 +24,15 @@
     "created_at": "2023-11-05T14:30:00Z",
     "updated_at": "2023-11-05T14:30:00Z",
     "current_jobs": [],
-    "completed_jobs": [],
+    "completed_jobs": [
+      { "$oid": "650e7c3f5f1e4e0001a0bdf4" }
+    ],
     "cpu_info": "AMD EPYC 7742",
     "gpu_info": "NVIDIA A100",
     "ram_size_gb": 512
   },
   {
-    "_id": { "$oid": "650e842f5f1e4e0001a0be03" },
+    "_id": { "$oid": "650e842f5f1e4e0001a0be13" },
     "hostname": "server_3",
     "address": "192.168.1.3",
     "description": "Test server for job simulation.",
@@ -40,7 +40,7 @@
     "created_at": "2023-11-20T09:00:00Z",
     "updated_at": "2023-11-20T09:00:00Z",
     "current_jobs": [
-      { "$oid": "650e7c3f5f1e4e0001a0bdf4" }
+      { "$oid": "650e7c3f5f1e4e0001a0bdf5" }
     ],
     "completed_jobs": [],
     "cpu_info": "Intel Xeon Platinum 8280",

@@ -2,7 +2,6 @@ package db
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"github.com/moevm/nosql2h24-transcribtion/config"
 	"github.com/moevm/nosql2h24-transcribtion/models"
@@ -10,6 +9,10 @@ import (
 	"io"
 	"log"
 	"os"
+)
+
+import (
+	"go.mongodb.org/mongo-driver/bson"
 )
 
 func loadDataFromFile(filePath string, result interface{}) error {
@@ -24,7 +27,7 @@ func loadDataFromFile(filePath string, result interface{}) error {
 		return err
 	}
 
-	err = json.Unmarshal(data, &result)
+	err = bson.UnmarshalExtJSON(data, true, result)
 	if err != nil {
 		return err
 	}
