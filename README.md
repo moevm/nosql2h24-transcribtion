@@ -1,5 +1,12 @@
 # nosql_template
 
+Администратор:
+admin.master@example.com
+hashed_password_admin
+
+Пользователь:
+john.doe@example.com
+hashed_password_123
 
 ## Предварительная проверка заданий
 
