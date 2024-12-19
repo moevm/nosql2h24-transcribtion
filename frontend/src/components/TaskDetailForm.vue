@@ -1,29 +1,39 @@
 <template>
   <div class="task-detail">
     <div class="header">
-      <h2>{{ task.name }}</h2>
+      <h2>{{ task.title }}</h2>
       <span class="status" :class="statusClass">{{ task.status }}</span>
     </div>
 
     <div class="details">
       <div>
-        <label>From Language:</label>
-        <p>{{ task.fromLanguage }}</p>
-      </div>
-
-      <div>
-        <label>To Language:</label>
-        <p>{{ task.toLanguage }}</p>
+        <label>Source Language:</label>
+        <p>{{ task.source_language }}</p>
       </div>
 
       <div>
         <label>File Format:</label>
-        <p>{{ task.fileFormat }}</p>
+        <p>{{ task.file_format }}</p>
       </div>
 
       <div>
         <label>Description:</label>
         <p>{{ task.description }}</p>
+      </div>
+
+      <div>
+        <label>Input file:</label>
+        <p>{{ task.input_file }}</p>
+      </div>
+
+      <div>
+        <label>Output file:</label>
+        <p>{{ task.output_file }}</p>
+      </div>
+
+      <div>
+        <label>Created at:</label>
+        <p>{{ task.created_at }}</p>
       </div>
     </div>
 
@@ -64,7 +74,7 @@ export default {
   padding: 20px;
   border: 1px solid #ddd;
   border-radius: 8px;
-  background-color: #fff;
+  background-color: #6b827a;
 }
 
 .header {
