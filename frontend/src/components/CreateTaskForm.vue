@@ -1,105 +1,91 @@
 <template>
-  <form @submit.prevent="handleCreateTask" enctype="multipart/form-data">
-    <h2>Create New Task</h2>
+  <form @submit.prevent="handleCreateJob" enctype="multipart/form-data">
+    <h2>Create New Job</h2>
     <div>
-      <label>Server Id:</label>
-      <input type="text" v-model="serverId" required />
+      <label>Title:</label>
+      <input type="text" v-model="job.title" required />
     </div>
     <div>
-      <label>Job Id:</label>
-      <input type="text" v-model="jobId" required />
+      <label>Status:</label>
+      <input type="text" v-model="job.status" required />
     </div>
     <div>
-      <label>Task Name:</label>
-      <input type="text" v-model="taskName" required />
-    </div>
-    <div>
-      <label>From Language:</label>
-      <input type="text" v-model="fromLanguage" required />
-    </div>
-    <div>
-      <label>To Language:</label>
-      <input type="text" v-model="toLanguage" required />
+      <label>Source Language:</label>
+      <input type="text" v-model="job.source_language" required />
     </div>
     <div>
       <label>File Format:</label>
-      <input type="text" v-model="fileFormat" required />
+      <input type="text" v-model="job.file_format" required />
     </div>
     <div>
       <label>Description:</label>
-      <textarea v-model="description" required></textarea>
+      <textarea v-model="job.description" required></textarea>
     </div>
     <div>
-      <label>Upload File:</label>
+      <label>Upload Input File:</label>
       <input type="file" @change="handleFileUpload" required />
     </div>
-    <button type="submit">Create Task</button>
-    <button type="button" @click="$emit('close')">Cancel</button>
+    <div>
+      <label>Output File:</label>
+      <input type="text" v-model="job.output_file" required />
+    </div>
+    <button type="submit">Create Job</button>
   </form>
 </template>
 
 <script>
 import { ref } from 'vue';
+import { addUserJob } from '../api/userApi';
 
 export default {
-  setup(_, { emit }) {
-    const taskName = ref('');
-    const fromLanguage = ref('');
-    const toLanguage = ref('');
-    const fileFormat = ref('');
-    const description = ref('');
-    const serverId = ref('');
-    const file = ref(null);
-    const jobId = ref('');
+  setup() {
+    const job = ref({
+      title: '',
+      status: 'pending',
+      source_language: '',
+      file_format: '',
+      description: '',
+      input_file: null,
+      output_file: '',
+    });
 
     const handleFileUpload = (event) => {
-      file.value = event.target.files[0];
+      job.value.input_file = event.target.files[0];
     };
 
-    const handleCreateTask = async () => {
-      if (!file.value) {
-        alert('Please upload a file');
-        return;
-      }
-
+    const handleCreateJob = async () => {
+      const userId = 'user-id'; // Replace with actual user ID
       const formData = new FormData();
-      formData.append('name', taskName.value);
-      formData.append('fromLanguage', fromLanguage.value);
-      formData.append('toLanguage', toLanguage.value);
-      formData.append('fileFormat', fileFormat.value);
-      formData.append('description', description.value);
-      formData.append('file', file.value);
-
-      console.log('http://localhost:5000/' + serverId.value + '/jobs/' + jobId.value)
+      formData.append('title', job.value.title);
+      formData.append('status', job.value.status);
+      formData.append('source_language', job.value.source_language);
+      formData.append('file_format', job.value.file_format);
+      formData.append('description', job.value.description);
+      formData.append('input_file', job.value.input_file);
+      formData.append('output_file', job.value.output_file);
 
       try {
-        const response = await fetch('http://localhost:5000/' + serverId.value + '/jobs/' + jobId.value, {
-          method: 'POST',
-          body: formData,
-        });
-
-        if (!response.ok) {
-          throw new Error('Failed to create task');
-        }
-
-        const newTask = await response.json();
-        emit('create', newTask);
-        alert('Task created successfully!');
+        const newJob = await addUserJob(userId, formData);
+        alert('Job created successfully!');
+        // Optionally, reset the form or update the local state
+        job.value = {
+          title: '',
+          status: 'pending',
+          source_language: '',
+          file_format: '',
+          description: '',
+          input_file: null,
+          output_file: '',
+        };
       } catch (error) {
-        alert(error.message);
+        alert('Failed to create job');
       }
     };
 
     return {
-      taskName,
-      fromLanguage,
-      toLanguage,
-      fileFormat,
-      description,
-      serverId,
-      jobId,
+      job,
       handleFileUpload,
-      handleCreateTask,
+      handleCreateJob,
     };
   },
 };
@@ -109,6 +95,5 @@ export default {
 form {
   display: flex;
   flex-direction: column;
-  background-color: #000000;
 }
 </style>
