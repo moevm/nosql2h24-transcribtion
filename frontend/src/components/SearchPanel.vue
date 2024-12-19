@@ -5,23 +5,18 @@
     <!-- Search Box -->
     <div class="search-box">
       <div>
-        <label>Task Type:</label>
-        <input type="text" v-model="filters.taskType" placeholder="e.g., Transcription" />
+        <label>Source Language:</label>
+        <input type="text" v-model="filters.source_language" placeholder="Source language" />
       </div>
 
       <div>
-        <label>Attribute:</label>
-        <input type="text" v-model="filters.attribute" placeholder="e.g., Audio" />
+        <label>Title:</label>
+        <input type="text" v-model="filters.title" placeholder="Title name" />
       </div>
 
       <div>
-        <label>Task Name:</label>
-        <input type="text" v-model="filters.taskName" placeholder="e.g., Meeting Notes" />
-      </div>
-
-      <div>
-        <label>Text:</label>
-        <input type="text" v-model="filters.text" placeholder="Enter keyword" />
+        <label>File format:</label>
+        <input type="text" v-model="filters.file_format" placeholder="" />
       </div>
 
       <button @click="applyFilters">Search</button>
@@ -31,9 +26,8 @@
     <div class="sort-section">
       <label>Sort By:</label>
       <select v-model="sortKey">
-        <option value="name">Task Name</option>
-        <option value="type">Task Type</option>
-        <option value="createdAt">Created At</option>
+        <option value="title">Title</option>
+        <option value="source_language">Source language</option>
       </select>
       <button @click="sortTasks">Sort</button>
     </div>
@@ -42,16 +36,16 @@
     <table>
       <thead>
         <tr>
-          <th>Task Name</th>
-          <th>Task Type</th>
+          <th>Title</th>
+          <th>Source language</th>
           <th>Created At</th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="task in filteredTasks" :key="task.id">
-          <td>{{ task.name }}</td>
-          <td>{{ task.type }}</td>
-          <td>{{ task.createdAt }}</td>
+          <td>{{ task.title }}</td>
+          <td>{{ task.source_language }}</td>
+          <td>{{ task.created_at }}</td>
         </tr>
       </tbody>
     </table>
@@ -60,22 +54,26 @@
 
 <script>
 import { ref, computed } from 'vue';
+import { useUserStore} from '../store/user';
+import { getUserJobs } from '../api/userApi';
 
 export default {
   setup() {
     // Sample tasks data
-    const tasks = ref([
-      { id: 1, name: 'Transcribe Meeting', type: 'Audio', createdAt: '2024-04-01' },
-      { id: 2, name: 'Translate Report', type: 'Document', createdAt: '2024-05-10' },
-      { id: 3, name: 'Subtitles for Video', type: 'Video', createdAt: '2024-06-15' },
-    ]);
+    const tasks = ref([]);
+    const userStore = useUserStore();
 
     const filters = ref({
-      taskType: '',
-      attribute: '',
-      taskName: '',
-      text: '',
+      source_language: '',
+      title: '',
+      file_format: '',
     });
+
+    const loadTasks = async () => {
+      tasks.value = await getUserJobs(userStore.id);
+    };
+
+    loadTasks();
 
     const sortKey = ref('name');
     const sortOrder = ref('asc');
@@ -85,9 +83,9 @@ export default {
       return tasks.value
         .filter((task) => {
           return (
-            (!filters.value.taskType || task.type.toLowerCase().includes(filters.value.taskType.toLowerCase())) &&
-            (!filters.value.taskName || task.name.toLowerCase().includes(filters.value.taskName.toLowerCase())) &&
-            (!filters.value.text || task.name.toLowerCase().includes(filters.value.text.toLowerCase()))
+            (!filters.value.source_language || task.source_language.toLowerCase().includes(filters.value.source_language.toLowerCase())) &&
+            (!filters.value.title || task.title.toLowerCase().includes(filters.value.title.toLowerCase())) &&
+            (!filters.value.file_format || task.title.toLowerCase().includes(filters.value.file_format.toLowerCase()))
           );
         })
         .sort((a, b) => {
@@ -112,6 +110,8 @@ export default {
       sortTasks,
       applyFilters,
       filteredTasks,
+      userStore,
+      loadTasks
     };
   },
 };
@@ -122,6 +122,7 @@ export default {
   max-width: 800px;
   margin: auto;
   padding: 20px;
+  background-color: #452c44;
 }
 
 h2 {
@@ -197,16 +198,18 @@ h2 {
 table {
   width: 100%;
   border-collapse: collapse;
+  background-color: #6b827a;
 }
 
 th, td {
   border: 1px solid #ddd;
   padding: 10px;
   text-align: left;
+  background-color: #6b827a;
 }
 
 th {
-  background-color: #f4f4f4;
+  background-color: #68af96;
 }
 
 tr:hover {
