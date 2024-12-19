@@ -1,6 +1,6 @@
 <template>
   <div class="user-panel">
-    <h1>User Panel</h1>
+    <h1>User Panel for user {{ this.userStore.username }}</h1>
 
     <div class="buttons">
       <button @click="openCreateTask">Create Task</button>
@@ -36,7 +36,7 @@
     <!-- Edit Profile Modal -->
     <div v-if="showEditProfile" class="modal-overlay">
       <div class="modal">
-        <EditProfileForm :userData="userData" @save="handleSaveProfile" @close="closeEditProfile" />
+        <EditProfileForm @save="handleSaveProfile" @close="closeEditProfile" />
       </div>
     </div>
 
@@ -177,10 +177,15 @@ export default {
       showSearchPanel,
       openSearchPanel,
       closeSearchPanel,
+      openEditProfile,
+      closeEditProfile,
+
       selectTask,
       closeTaskDetail,
       handleSaveProfile,
       loadTasks,
+
+      userStore
 
     };
   },
