@@ -18,7 +18,7 @@
       </thead>
       <tbody>
         <tr v-for="task in tasks" :key="task.id" @click="selectTask(task)">
-          <td>{{ task.name }}</td>
+          <td>{{ task.title }}</td>
           <td>{{ task.status }}</td>
         </tr>
       </tbody>
@@ -27,6 +27,8 @@
     <!-- Create Task Modal -->
     <div v-if="showCreateTask" class="modal-overlay">
       <div class="modal">
+        <button class="close-button" @click="closeCreateTask">Close</button>
+
         <CreateTaskForm @create="handleCreateTask" @close="closeCreateTask" />
       </div>
     </div>
@@ -71,48 +73,32 @@ import TaskDetailForm from '../components/TaskDetailForm.vue';
 import CreateTaskForm from '../components/CreateTaskForm.vue';
 import BillingForm from '../components/BillingForm.vue';
 import SearchPanel from '../components/SearchPanel.vue';
+import { useUserStore } from '../store/user';
+import { getUserJobs } from '../api/userApi';
 
 export default {
   components: { EditProfileForm, TaskDetailForm, CreateTaskForm, BillingForm, SearchPanel },
   setup() {
     // Sample tasks data
-    const tasks = ref([
-      {
-        id: 1,
-        name: 'Design Homepage',
-        status: 'In Progress',
-        fromLanguage: 'English',
-        toLanguage: 'Spanish',
-        fileFormat: 'MP4',
-        description: 'Transcribe homepage design meeting video.',
-      },
-      {
-        id: 2,
-        name: 'Fix Bug #102',
-        status: 'Completed',
-        fromLanguage: 'German',
-        toLanguage: 'English',
-        fileFormat: 'MP3',
-        description: 'Transcribe bug report audio.',
-      },
-      {
-        id: 3,
-        name: 'Deploy to Production',
-        status: 'Pending',
-        fromLanguage: 'French',
-        toLanguage: 'English',
-        fileFormat: 'WAV',
-        description: 'Transcribe deployment instructions.',
-      },
-    ]);
+    const userStore = useUserStore();
+    const tasks = ref([])
+      
 
     const showEditProfile = ref(false);
     const userData = ref({
-      username: 'JohnDoe',
-      email: 'johndoe@example.com',
+      username: userStore.username,
+      email: userStore.email,
     });
 
     const selectedTask = ref(null);
+
+
+    const loadTasks = async () => {
+      tasks.value = await getUserJobs(userStore.id);
+    };
+
+    loadTasks();
+    
 
     const selectTask = (task) => {
       selectedTask.value = task;
@@ -130,6 +116,8 @@ export default {
 
     const closeCreateTask = () => {
       showCreateTask.value = false;
+
+      loadTasks();
     };
 
     const showBillingForm = ref(false);
@@ -174,32 +162,26 @@ export default {
       alert('Profile updated successfully!');
       closeEditProfile();
     };
-
+    
     return {
       tasks,
       showEditProfile,
       userData,
       selectedTask,
       showCreateTask,
-        openCreateTask,
-        closeCreateTask,
-    
-        showBillingForm,
-        openBillingForm,
-        closeBillingForm,
-
-        showSearchPanel,
+      openCreateTask,
+      closeCreateTask,
+      showBillingForm,
+      openBillingForm,
+      closeBillingForm,
+      showSearchPanel,
       openSearchPanel,
       closeSearchPanel,
-
       selectTask,
       closeTaskDetail,
-      createTask,
-      getAccess,
-      searchTasks,
-      openEditProfile,
-      closeEditProfile,
       handleSaveProfile,
+      loadTasks,
+
     };
   },
 };
