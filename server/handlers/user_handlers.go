@@ -530,9 +530,22 @@ func AddUserJob(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	var user models.User
+	err = usersCollection.FindOne(context.Background(), bson.M{"_id": id}).Decode(&user)
+	if err != nil {
+		http.Error(w, "Error fetching user", http.StatusInternalServerError)
+		return
+	}
+
+	if user.Jobs == nil {
+		user.Jobs = []primitive.ObjectID{job.ID}
+	} else {
+		user.Jobs = append(user.Jobs, job.ID)
+	}
+
 	_, err = usersCollection.UpdateOne(context.Background(),
 		bson.M{"_id": id},
-		bson.M{"$push": bson.M{"jobs": job.ID}},
+		bson.M{"$set": bson.M{"jobs": user.Jobs}},
 	)
 	if err != nil {
 		http.Error(w, "Error updating user jobs", http.StatusInternalServerError)
