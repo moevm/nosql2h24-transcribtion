@@ -8,7 +8,7 @@
       </div>
       <div>
         <label>Password:</label>
-        <input type="password" v-model="password" required />
+        <input type="password" v-model="password" />
       </div>
       <button type="submit">Login</button>
     </form>
@@ -19,7 +19,9 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
-import { loginUser } from '../api/userApi';
+import { getUsers } from '../api/userApi';
+import { useUserStore } from '../store/user';
+
 
 export default {
   setup() {
@@ -27,6 +29,7 @@ export default {
     const password = ref('');
     const router = useRouter();
     const store = useStore();
+    const userStore = useUserStore();
 
     const handleLogin = async () => {
       try {
@@ -36,17 +39,33 @@ export default {
         };
         console.log(userData.email, userData.password);
         if (userData.email === 'user@gmail.com' && userData.password === 'user') {
-          store.dispatch('login', { email: userData.email });
+
+          userStore.password_hash = userData.password;
+          userStore.email = userData.email;
+          userStore.username = 'TEST USER';
+          userStore.id = '-1';
+
           router.push('/user-panel');
           return;
         }
+        else {
+          const users = await getUsers()
 
-        const user = await loginUser(userData);
-        store.dispatch('login', user);
-        alert('Login successful!');
+          // Проверка, если ли юзер в бд
+          users.forEach(usr => {
+            if (usr.email === userData.email && usr.password_hash === userData.password) {
+              userStore.password_hash = userData.password;
+              userStore.email = userData.email;
+              userStore.username = usr.username;
+              userStore.id = usr.id;
+            }
+          });
+        }
+
+        alert('все круто');
         router.push('/user-panel');
       } catch (error) {
-        alert('Login failed');
+        alert('Неправильно введены логин или пароль');
       }
     };
 
