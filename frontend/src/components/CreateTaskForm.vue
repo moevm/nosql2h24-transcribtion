@@ -36,6 +36,8 @@
 <script>
 import { ref } from 'vue';
 import { addUserJob } from '../api/userApi';
+import {useUserStore} from '../store/user';
+
 
 export default {
   setup() {
@@ -49,22 +51,28 @@ export default {
       output_file: '',
     });
 
+    const userStore = useUserStore();
+
     const handleFileUpload = (event) => {
       job.value.input_file = event.target.files[0];
     };
 
     const handleCreateJob = async () => {
-      const userId = 'user-id'; // Replace with actual user ID
-      const formData = new FormData();
-      formData.append('title', job.value.title);
-      formData.append('status', job.value.status);
-      formData.append('source_language', job.value.source_language);
-      formData.append('file_format', job.value.file_format);
-      formData.append('description', job.value.description);
-      formData.append('input_file', job.value.input_file);
-      formData.append('output_file', job.value.output_file);
+      const userId = userStore.id; // Replace with actual user ID
+
+      const formData = {
+        title: job.value.title,
+        status: job.value.status,
+        source_language: job.value.source_language,
+        file_format: job.value.file_format,
+        description: job.value.description,
+        input_file: job.value.input_file.name,
+        output_file: job.value.output_file,
+      }
 
       try {
+        console.log(formData);
+
         const newJob = await addUserJob(userId, formData);
         alert('Job created successfully!');
         // Optionally, reset the form or update the local state
@@ -78,7 +86,7 @@ export default {
           output_file: '',
         };
       } catch (error) {
-        alert('Failed to create job');
+        alert('Failed to create job: ', error.message);
       }
     };
 
@@ -95,5 +103,6 @@ export default {
 form {
   display: flex;
   flex-direction: column;
+  background-color: #6b827a;
 }
 </style>
