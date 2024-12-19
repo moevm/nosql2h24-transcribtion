@@ -25,7 +25,7 @@ import { useUserStore } from '../store/user';
 
 export default {
   setup() {
-    const email = ref('alice.wonder@example.com');
+    const email = ref('jane.smith@example.com');
     const password = ref('');
     const router = useRouter();
     const store = useStore();
@@ -45,12 +45,25 @@ export default {
         users.forEach(usr => {
           console.log(usr)
           if (usr.email === userData.email && usr.password_hash === userData.password && usr.permissions === 'user') {
+            console.log('LOGING AS USER')
+            
             userStore.password_hash = userData.password;
             userStore.email = userData.email;
             userStore.username = usr.username;
             userStore.id = usr.id;
 
             router.push('/user-panel');
+            return
+          }
+          if (usr.email === userData.email && usr.password_hash === userData.password && usr.permissions === 'admin') {
+            console.log('LOGING AS ADMIN')
+            
+            userStore.password_hash = userData.password;
+            userStore.email = userData.email;
+            userStore.username = usr.username;
+            userStore.id = usr.id;
+
+            router.push('/admin-panel');
             return
           }
         });
