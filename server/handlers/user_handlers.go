@@ -150,9 +150,6 @@ func GetUsers(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Error iterating over users", http.StatusInternalServerError)
 		return
 	}
-	for i := range users {
-		users[i].PasswordHash = ""
-	}
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
@@ -192,7 +189,6 @@ func GetUserByID(w http.ResponseWriter, r *http.Request) {
 		}
 		return
 	}
-	user.PasswordHash = ""
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
@@ -267,8 +263,6 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Error fetching updated user", http.StatusInternalServerError)
 		return
 	}
-
-	user.PasswordHash = ""
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
@@ -347,7 +341,6 @@ func PatchUser(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Error fetching updated user", http.StatusInternalServerError)
 		return
 	}
-	user.PasswordHash = ""
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
@@ -403,7 +396,6 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	newUser.PasswordHash = ""
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(newUser)
